@@ -29,6 +29,12 @@ npm run lint
 * vue add electron-builder
 * npm run electron:serve
 
+### Stack
+* VueJS
+* VueRouter
+* Bootstrap-Vue
+* ElectronJS
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
