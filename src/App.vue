@@ -22,7 +22,8 @@
 
           <b-navbar-nav>
             <b-nav-item to="/about">About</b-nav-item>
-            <b-nav-item href="#">Action</b-nav-item>
+            <b-nav-item href="#">Series</b-nav-item>
+            <b-nav-item href="https://www.imdb.com" target="_blank">Action</b-nav-item>
             <b-nav-item href="#">Drama</b-nav-item>
             <b-nav-item href="#">Horror</b-nav-item>
             <b-nav-item href="#">Sci-Fi</b-nav-item>
@@ -72,8 +73,8 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
-    background-color: black
+    color: white;
+    background-color: black;
   }
 
   .navbar-brand {
