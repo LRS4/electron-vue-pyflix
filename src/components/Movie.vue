@@ -5,7 +5,7 @@
      <h3>{{ movieData.Title }}</h3>
      <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
      <p>{{ movieData.Plot }}</p>
-     <img v-bind:src="`${ movieData.Poster }`" />
+     <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
     </div>
   </div>
 </template>
@@ -43,5 +43,9 @@ li {
 }
 a {
   color: #42b983;
+}
+.moviePoster {
+  height: 32%;
+  width: 32%;
 }
 </style>

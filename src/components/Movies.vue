@@ -1,11 +1,11 @@
 <template>
   <div class="hello">
     <div v-if="!movieData" class="loading">Loading Please wait...</div>
-    <div v-else class="movies">
-     <h3>{{ movieData.Title }}</h3>
-     <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
-     <p>{{ movieData.Plot }}</p>
-     <img v-bind:src="`${ movieData.Poster }`" />
+    <div v-else v-for="movie in movieData" v-bind:key="movie.imdbId" class="movies">
+     <h3>{{ movie.Title }}</h3>
+     <small>{{ movie.Year }} - {{ movie.Director }} </small>
+     <p>{{ movie.Plot }}</p>
+     <img v-bind:src="`${ movie.Poster }`" />
     </div>
   </div>
 </template>
@@ -27,8 +27,8 @@ export default {
     };
   },
   created() {
-    axios.get('http://www.omdbapi.com/?t=gladiator&y=2000&apikey=ff0c3dab')
-    .then(response => (this.movieData = response.data))
+    axios.get('http://www.omdbapi.com/?apikey=ff0c3dab&s=american')
+    .then(response => (this.movieData = response.data.Search))
   }
 }
 </script>
@@ -36,7 +36,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
-  margin: 40px 0 0;
+  margin: 10px 0 0;
 }
 ul {
   list-style-type: none;
