@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
-    <div v-if="!movieData" class="loading">Loading Please wait...</div>
-    <div v-else v-for="movie in movieData" v-bind:key="movie.imdbId" class="movies">
+    <div v-if="!moviesData" class="loading">Loading Please wait...</div>
+    <div v-else v-for="movie in moviesData" v-bind:key="movie.imdbId" class="movies">
      <h3>{{ movie.Title }}</h3>
      <small>{{ movie.Year }} - {{ movie.Director }} </small>
      <p>{{ movie.Plot }}</p>
@@ -23,12 +23,30 @@ export default {
   name: 'Movies',
   data() {
     return {
-      movieData: []
+      moviesData: []
     };
   },
+  methods: {
+    populateMovieData() {
+      const movieNames = ['Gladiator', 'The Matrix', 'The Terminator']; // the values for the API lookup
+      
+      // https://stackoverflow.com/questions/56532652/axios-get-then-in-a-for-loop
+      let movies = [];
+      let promises = [];
+      movieNames.forEach(name => {
+        promises.push(
+          axios.get(`http://www.omdbapi.com/?t=${ name }&y=&apikey=ff0c3dab`).then(response => {
+            movies.push(response.data);
+          })
+        )
+      })
+
+      Promise.all(promises).then(() => this.moviesData = movies);
+      console.log(movies);
+    }
+  },
   created() {
-    axios.get('http://www.omdbapi.com/?apikey=ff0c3dab&s=american')
-    .then(response => (this.movieData = response.data.Search))
+    this.populateMovieData()
   }
 }
 </script>
