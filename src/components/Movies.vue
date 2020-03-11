@@ -4,6 +4,7 @@
     <p>
       ... to my very own Netflix app :)
     </p>
+    <div v-if="!movieData">Loading Please wait...</div>
     <div class="movie">
      <h3>{{ movieData.Title }}</h3>
      <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
@@ -23,7 +24,7 @@ This is simplified with axios. Let’s replace our current fetch function with a
 import axios from 'axios';
 
 export default {
-  name: 'HelloWorld',
+  name: 'Movies',
   data() {
     return {
       movieData: []

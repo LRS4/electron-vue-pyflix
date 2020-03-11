@@ -4,7 +4,8 @@
     <p>
       ... to my very own Netflix app :)
     </p>
-    <div class="movie">
+    <div v-if="!movieData">Loading Please wait...</div>
+    <div v-else class="movie">
      <h3>{{ movieData.Title }}</h3>
      <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
      <p>{{ movieData.Plot }}</p>
