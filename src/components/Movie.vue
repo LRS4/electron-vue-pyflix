@@ -1,10 +1,6 @@
 <template>
   <div class="hello">
-    <h1>Welcome</h1>
-    <p>
-      ... to my very own Netflix app :)
-    </p>
-    <div v-if="!movieData">Loading Please wait...</div>
+    <div v-if="!movieData" class="loading">Loading Please wait...</div>
     <div v-else class="movie">
      <h3>{{ movieData.Title }}</h3>
      <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
@@ -22,7 +18,7 @@ export default {
   data() {
     return {
       movieName: this.$route.params.title,
-      movieData: []
+      movieData: null
     };
   },
   created() {

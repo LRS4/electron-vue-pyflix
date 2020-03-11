@@ -21,8 +21,8 @@
           </b-navbar-nav>
 
           <b-navbar-nav>
-            <b-nav-item to="/movie/the terminator">About</b-nav-item>
-            <b-nav-item href="#">Series</b-nav-item>
+            <b-nav-item to="/about">About</b-nav-item>
+            <b-nav-item to="/movie/the terminator">Series</b-nav-item>
             <b-nav-item href="https://www.imdb.com" target="_blank">Action</b-nav-item>
             <b-nav-item href="#">Drama</b-nav-item>
             <b-nav-item href="#">Horror</b-nav-item>
@@ -39,10 +39,6 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-    </div>
-
-    <div class="vue-logo">
-      <img alt="Vue logo" src="./assets/logo.png">
     </div>
 
     <!-- route outlet -->

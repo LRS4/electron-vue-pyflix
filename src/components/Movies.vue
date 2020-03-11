@@ -1,11 +1,7 @@
 <template>
   <div class="hello">
-    <h1>Welcome</h1>
-    <p>
-      ... to my very own Netflix app :)
-    </p>
-    <div v-if="!movieData">Loading Please wait...</div>
-    <div class="movie">
+    <div v-if="!movieData" class="loading">Loading Please wait...</div>
+    <div v-else class="movies">
      <h3>{{ movieData.Title }}</h3>
      <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
      <p>{{ movieData.Plot }}</p>
