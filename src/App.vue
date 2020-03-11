@@ -21,7 +21,7 @@
           </b-navbar-nav>
 
           <b-navbar-nav>
-            <b-nav-item to="/movie">About</b-nav-item>
+            <b-nav-item to="/movie/the terminator">About</b-nav-item>
             <b-nav-item href="#">Series</b-nav-item>
             <b-nav-item href="https://www.imdb.com" target="_blank">Action</b-nav-item>
             <b-nav-item href="#">Drama</b-nav-item>

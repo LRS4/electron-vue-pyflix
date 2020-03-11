@@ -20,11 +20,12 @@ export default {
   name: 'Movie',
   data() {
     return {
+      movieName: this.$route.params.title,
       movieData: []
     };
   },
   created() {
-    axios.get('http://www.omdbapi.com/?t=gladiator&y=2000&apikey=ff0c3dab')
+    axios.get(`http://www.omdbapi.com/?t=${ this.movieName }&y=&apikey=ff0c3dab`)
     .then(response => (this.movieData = response.data))
   }
 }
