@@ -23,7 +23,7 @@
             <b-nav-item-dropdown left>
               <!-- Using 'button-content' slot -->
               <template v-slot:button-content>
-                <b>User</b>
+                <b>Filters</b>
               </template>
               <b-dropdown-item href="#">Top Rated</b-dropdown-item>
               <b-dropdown-item href="#">Most Watched</b-dropdown-item>

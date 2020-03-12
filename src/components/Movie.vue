@@ -9,6 +9,7 @@
       <p>Played {{ movieData.watchCount }} times</p>
       <p>Added {{ formatDate(movieData.dateAdded) }}</p>
       <button v-on:click="play">Play</button>
+      <a v-bind:href="`https://www.imdb.com/title/${movieData.imdbID}/#titleRecs`" target="_blank">More like this</a>
       <div>
         <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
       </div>
