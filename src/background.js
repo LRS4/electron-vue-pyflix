@@ -43,7 +43,7 @@ function createWindow () {
   // win.isFullScreen(true)
 
   // Remove the menu bar
-  win.removeMenu()
+  // win.removeMenu()
 
   win.on('closed', () => {
     win = null
