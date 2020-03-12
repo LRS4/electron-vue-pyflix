@@ -16,6 +16,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.6.1",
+    "chunk": "0.0.2",
     "core-js": "^3.6.4",
     "electron-storage": "^1.0.7",
     "moment": "^2.24.0",
