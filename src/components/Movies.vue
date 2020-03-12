@@ -3,10 +3,12 @@
     <button v-on:click="addNewItem">Add new item</button>
     <div v-if="!moviesData" class="loading">Loading Please wait...</div>
     <div v-else v-for="movie in moviesData" v-bind:key="movie.imdbId" class="movies">
-     <h3>{{ movie.Title }}</h3>
-     <small>{{ movie.Year }} - {{ movie.Director }} </small>
-     <p>{{ movie.Plot }}</p>
-     <img v-bind:src="`${ movie.Poster }`" />
+      <h3>{{ movie.Title }}</h3>
+      <small>{{ movie.Year }} - {{ movie.Director }}</small>
+      <p>{{ movie.Plot }}</p>
+      <router-link v-bind:to="'/movie/' + movie.imdbID">
+        <img v-bind:src="`${ movie.Poster }`" />
+      </router-link>
     </div>
   </div>
 </template>
@@ -96,7 +98,14 @@ export default {
           movieNames.forEach(name => {
             promises.push(
               axios.get(`http://www.omdbapi.com/?t=${ name }&y=&apikey=ff0c3dab`).then(response => {
-                movies.push(response.data);
+                let newData = response.data;
+                newData.watchCount = 0;
+                newData.dateLastWatched = 'Not watched';
+                newData.minuteLastWatched = 0;
+                newData.myRating = 0;
+                newData.fileLocation = 'C://somepath';
+                newData.dateAdded = moment();
+                movies.push(newData);
               })
             )
           })

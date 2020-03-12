@@ -2,28 +2,35 @@
   <div class="hello">
     <div v-if="!movieData" class="loading">Loading Please wait...</div>
     <div v-else class="movie">
-     <h3>{{ movieData.Title }}</h3>
-     <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
-     <p>{{ movieData.Plot }}</p>
-     <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
+      <h3>{{ movieData.Title }}</h3>
+      <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
+      <p>{{ movieData.Plot }}</p>
+      <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+const storage = require('electron-storage');
 
 export default {
   name: 'Movie',
   data() {
     return {
-      movieName: this.$route.params.title,
+      movieId: this.$route.params.id,
       movieData: null
     };
   },
   created() {
-    axios.get(`http://www.omdbapi.com/?t=${ this.movieName }&y=&apikey=ff0c3dab`)
-    .then(response => (this.movieData = response.data))
+    storage.get('movies')
+      .then(data => {
+           for (let movie in data) {
+               if (data[movie].imdbID == this.movieId) {
+                   this.movieData = data[movie];
+                   return console.log("Movie found!");
+               }
+           }
+      });
   }
 }
 </script>
