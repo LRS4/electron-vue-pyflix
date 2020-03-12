@@ -37,8 +37,13 @@ export default {
       .then(data => {
 
         // create new item to add to model
-        axios.get('http://www.omdbapi.com/?&t=we were soldiers&apikey=ff0c3dab')
+        axios.get('http://www.omdbapi.com/?&t=armageddon&y=1998&apikey=ff0c3dab')
         .then(response => {
+          console.log()
+          if (response.data.Error == 'Movie not found!') { 
+            return console.error('Undefined error! The movie could not be found.') 
+          }
+
           let newData = response.data;
 
           // check item does not already exist

@@ -10,17 +10,6 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item-dropdown left>
-              <!-- Using 'button-content' slot -->
-              <template v-slot:button-content>
-                <b>User</b>
-              </template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
-              <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-            </b-nav-item-dropdown>
-          </b-navbar-nav>
-
-          <b-navbar-nav>
             <b-nav-item to="/about">About</b-nav-item>
             <b-nav-item to="/movie/the terminator">Series</b-nav-item>
             <b-nav-item href="https://www.imdb.com" target="_blank">Action</b-nav-item>
@@ -29,6 +18,18 @@
             <b-nav-item href="#">Sci-Fi</b-nav-item>
             <b-nav-item href="#">Comedy</b-nav-item>
           </b-navbar-nav>  
+
+          <b-navbar-nav>
+            <b-nav-item-dropdown left>
+              <!-- Using 'button-content' slot -->
+              <template v-slot:button-content>
+                <b>User</b>
+              </template>
+              <b-dropdown-item href="#">Top Rated</b-dropdown-item>
+              <b-dropdown-item href="#">Most Watched</b-dropdown-item>
+              <b-dropdown-item href="#">Recently Added</b-dropdown-item>
+            </b-nav-item-dropdown>
+          </b-navbar-nav>
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">

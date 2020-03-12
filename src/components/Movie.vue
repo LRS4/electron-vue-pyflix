@@ -3,14 +3,18 @@
     <div v-if="!movieData" class="loading">Loading Please wait...</div>
     <div v-else class="movie">
       <h3>{{ movieData.Title }}</h3>
-      <small>{{ movieData.Year }} - {{ movieData.Director }} </small>
+      <p>{{ movieData.Year }}</p>
+      <p>{{ movieData.Director }} </p>
       <p>{{ movieData.Plot }}</p>
+      <p>Played {{ movieData.watchCount }} times</p>
+      <p>Added {{ formatDate(movieData.dateAdded) }}</p>
       <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 const storage = require('electron-storage');
 
 export default {
@@ -20,6 +24,14 @@ export default {
       movieId: this.$route.params.id,
       movieData: null
     };
+  },
+  methods: {
+    formatDate(value) {
+      if (value) {
+        // return moment(String(value)).format('Do MMMM YYYY HH:MMa');
+        return moment(value).fromNow();
+      }
+    }
   },
   created() {
     storage.get('movies')
