@@ -31,9 +31,15 @@ npm run lint
 
 ### Stack
 * VueJS
-* VueRouter
-* Bootstrap-Vue
 * ElectronJS
+
+### Packages
+* vue-router
+* bootstrap-vue
+* axios
+* moment-js
+* electron-storage
+* chunk
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
