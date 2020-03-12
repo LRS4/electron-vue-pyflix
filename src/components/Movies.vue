@@ -1,15 +1,19 @@
 <template>
-  <div class="hello">
+  <div class="movie-grid">
     <button v-on:click="addNewItem">Add new item</button>
-    <div v-if="!moviesData" class="loading">Loading Please wait...</div>
-    <div v-else v-for="movie in moviesData" v-bind:key="movie.imdbId" class="movies">
-      <h3>{{ movie.Title }}</h3>
-      <small>{{ movie.Year }} - {{ movie.Director }}</small>
-      <p>{{ movie.Plot }}</p>
-      <router-link v-bind:to="'/movie/' + movie.imdbID">
-        <img v-bind:src="`${ movie.Poster }`" />
-      </router-link>
-    </div>
+    <b-row v-for="movies in chunkedMovies" v-bind:key="movies.index">
+      <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
+        <router-link v-bind:to="'/movie/' + movie.imdbID">
+          <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
+        </router-link>
+        <p>
+          <span v-if="movie.Title.length <= 17" class="movieTitles">{{ movie.Title }}</span>
+          <span v-else class="movieTitles">{{ (movie.Title).slice(0, 17) }}...</span>
+          <br />
+          <span class="movieYears">{{ movie.Year }}</span>
+        </p>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -23,6 +27,7 @@ This is simplified with axios. Let’s replace our current fetch function with a
 import axios from 'axios';
 import moment from 'moment';
 const storage = require('electron-storage');
+const chunk = require('chunk');
 
 export default {
   name: 'Movies',
@@ -37,7 +42,7 @@ export default {
       .then(data => {
 
         // create new item to add to model
-        axios.get('http://www.omdbapi.com/?&t=armageddon&y=1998&apikey=ff0c3dab')
+        axios.get('http://www.omdbapi.com/?&t=the count of monte cristo&apikey=ff0c3dab')
         .then(response => {
           console.log()
           if (response.data.Error == 'Movie not found!') { 
@@ -130,6 +135,12 @@ export default {
       })
     }
   },
+  computed: {
+    chunkedMovies() {
+      // http://forum.vuejs.org/t/v-for-with-css-responsive-grid/7164/2
+      return chunk(this.moviesData, 6);
+    }
+  },
   created() {
     this.populateMovieData()
   }
@@ -151,5 +162,21 @@ li {
 }
 a {
   color: #42b983;
+}
+.b-container {
+  width: 100%;
+}
+.moviePosters {
+  height: 80%;
+  width: 100%;
+  max-width: 200px;
+}
+.movieTitles {
+  font-family: 'Roboto';
+  font-weight: bold;
+}
+.movieYears {
+  font-family: 'Roboto';
+  color: gray;
 }
 </style>
