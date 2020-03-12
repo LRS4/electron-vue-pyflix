@@ -1,15 +1,21 @@
 <template>
   <div class="hello">
     <div v-if="!movieData" class="loading">Loading Please wait...</div>
-    <div v-else class="movie">
+    <div v-else v-show="!isPlaying" class="movie">
       <h3>{{ movieData.Title }}</h3>
       <p>{{ movieData.Year }}</p>
-      <p>{{ movieData.Director }} </p>
+      <p>{{ movieData.Director }}</p>
       <p>{{ movieData.Plot }}</p>
       <p>Played {{ movieData.watchCount }} times</p>
       <p>Added {{ formatDate(movieData.dateAdded) }}</p>
-      <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
+      <button v-on:click="play">Play</button>
+      <div>
+        <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
+      </div>
     </div>
+    <video v-show="isPlaying" controls>
+      <source src="C:\Users\L.Spencer\Videos\IMG_1773.MOV" />
+    </video>
   </div>
 </template>
 
@@ -22,10 +28,25 @@ export default {
   data() {
     return {
       movieId: this.$route.params.id,
-      movieData: null
+      movieData: null,
+      isPlaying: false
     };
   },
   methods: {
+    play() {
+      (this.isPlaying == false) ? this.isPlaying = true : this.isPlaying = false;
+      storage.get('movies')
+      .then(data => {
+          for (let movie in data) {
+              if (data[movie].imdbID == this.movieId) {
+                  data[movie].watchCount += 1;
+                  storage.set('movies', data);
+                  this.movieData = data[movie];
+                  return console.log("Watch count updated!");
+              }
+          }
+      });
+    },
     formatDate(value) {
       if (value) {
         // return moment(String(value)).format('Do MMMM YYYY HH:MMa');
@@ -64,7 +85,7 @@ a {
   color: #42b983;
 }
 .moviePoster {
-  height: 32%;
-  width: 32%;
+  height: 20%;
+  width: 20%;
 }
 </style>

@@ -58,6 +58,7 @@ filewalker(target, function(err, data){
     });
 
     // ["c://some-existent-path/file.txt","c:/some-existent-path/subfolder"]
+    // Requirements: [name, year, fileLocation]
     data.forEach((item) => {
         let title = item.split("\\").pop();
         let length = title.split(".").length;

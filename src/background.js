@@ -16,9 +16,15 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600, webPreferences: {
-    nodeIntegration: true
-  } })
+  win = new BrowserWindow({ 
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false
+    }
+    // frame: false
+  })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -32,6 +38,12 @@ function createWindow () {
 
   // Maximises the window - optional
   win.maximize()
+
+  // Enables full screen
+  // win.isFullScreen(true)
+
+  // Remove the menu bar
+  win.removeMenu()
 
   win.on('closed', () => {
     win = null
