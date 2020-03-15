@@ -24,6 +24,7 @@
 import moment from 'moment';
 const storage = require('electron-storage');
 const shell = require('electron').shell;
+const path = require('path');
 
 export default {
   name: 'Movie',
@@ -48,7 +49,9 @@ export default {
               }
           }
       });
-      shell.openExternal('C:/Users/L.Spencer/Desktop/Dredd (2012).mp4'); // open file
+
+      // open file in default application
+      shell.openExternal(path.normalize("C:\\Users\\L.Spencer\\Desktop\\Movies\\Conan the Barbarian (1982).avi")); 
     },
     formatDate(value) {
       if (value) {
