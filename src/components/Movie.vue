@@ -14,15 +14,16 @@
         <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
       </div>
     </div>
-    <video v-show="isPlaying" controls>
-      <source src="C:\Users\L.Spencer\Videos\IMG_1773.MOV" />
-    </video>
+    <div v-show="isPlaying" controls>
+      <h1>Movie launching...</h1>
+    </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
 const storage = require('electron-storage');
+const shell = require('electron').shell;
 
 export default {
   name: 'Movie',
@@ -47,6 +48,7 @@ export default {
               }
           }
       });
+      shell.openExternal('C:/Users/L.Spencer/Desktop/Dredd (2012).mp4'); // open file
     },
     formatDate(value) {
       if (value) {
