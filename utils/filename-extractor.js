@@ -10,6 +10,7 @@ const target = 'C:/Users/username';
  * @param {Function} done 
  */
 function filewalker(dir, done) {
+    var t0 = performance.now(); // initialise performance timer
     let results = [];
 
     fs.readdir(dir, function(err, list) {
@@ -40,6 +41,8 @@ function filewalker(dir, done) {
             });
         });
     });
+    var t1 = performance.now();
+    console.log("Filewalker took " + (t1 - t0) + " milliseconds to complete the index.");
 }
 
 filewalker(target, function(err, data){
@@ -58,7 +61,8 @@ filewalker(target, function(err, data){
     });
 
     // ["c://some-existent-path/file.txt","c:/some-existent-path/subfolder"]
-    // Requirements: [name, year, fileLocation]
+    // Requirements for movies: [name, year, fileLocation]
+    // Requirements for series: [name, { season 1 { episode 1: fileLocation, episode 2: fileLocation } }]
     data.forEach((item) => {
         let title = item.split("\\").pop();
         let length = title.split(".").length;
