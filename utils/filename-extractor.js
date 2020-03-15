@@ -114,9 +114,7 @@ filewalker(target, function(err, data){
             } 
         }
     })
-
-    console.log(series.Title)
-
+    
     // Write the built up object to a file as JSON
     fs.appendFile(outputFilePath, JSON.stringify(outputJSON), function(err) {
         if(err) {

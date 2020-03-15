@@ -20,5 +20,8 @@ yarn-error.log*
 *.sln
 *.sw?
 
+# Local database
+/utils/hdd_data.json
+
 #Electron-builder output
 /dist_electron
