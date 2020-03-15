@@ -8,7 +8,7 @@
         ... to my very own Netflix app :)
     </p>
     <p>
-        ... built using Vue.js and Electron.js
+        ... built using the Open Movie Database API, Vue and Electron
     </p>
   </div>
 </template>
