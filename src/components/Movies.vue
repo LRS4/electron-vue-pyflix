@@ -26,6 +26,8 @@ This is simplified with axios. Let’s replace our current fetch function with a
 */
 import axios from 'axios';
 import moment from 'moment';
+const fs = require('fs');
+const path = require('path');
 const storage = require('electron-storage');
 const chunk = require('chunk');
 
@@ -99,26 +101,46 @@ export default {
             console.error(err);
           });
         } else {
-          const movieNames = ['Gladiator', 'The Matrix', 'The Terminator']; // the values for the API lookup
+          // the values for the API lookup from HDD
+          const movieItemsHDD = JSON.parse(fs.readFileSync(path.normalize('C:\\Users\\L.Spencer\\Documents\\GitHub\\electron-vue-pyflix\\utils\\hdd_data.json')));
       
           // https://stackoverflow.com/questions/56532652/axios-get-then-in-a-for-loop
           let movies = [];
           let promises = [];
           console.log('Calling OMDB API...');
-          movieNames.forEach(name => {
-            promises.push(
-              axios.get(`http://www.omdbapi.com/?t=${ name }&y=&apikey=ff0c3dab`).then(response => {
-                let newData = response.data;
-                newData.watchCount = 0;
-                newData.dateLastWatched = 'Not watched';
-                newData.minuteLastWatched = 0;
-                newData.myRating = 0;
-                newData.fileLocation = 'C://somepath';
-                newData.dateAdded = moment();
-                movies.push(newData);
-              })
-            )
+
+          movieItemsHDD.forEach(item => {
+            if (item.Type == 'movie') {
+              promises.push(
+                axios.get(`http://www.omdbapi.com/?t=${ item.Title }&y=${ item.Year }&apikey=ff0c3dab`)
+                .then(response => {
+                  let newData = response.data;
+                  newData.watchCount = 0;
+                  newData.dateLastWatched = 'Not watched';
+                  newData.minuteLastWatched = 0;
+                  newData.myRating = 0;
+                  newData.fileLocation = 'C://somepath';
+                  newData.dateAdded = moment();
+                  movies.push(newData);
+                })
+              )
+            } else {
+              promises.push(
+                axios.get(`http://www.omdbapi.com/?t=${ item.Title }&apikey=ff0c3dab`)
+                .then(response => {
+                  let newData = response.data;
+                  newData.watchCount = 0;
+                  newData.dateLastWatched = 'Not watched';
+                  newData.minuteLastWatched = 0;
+                  newData.myRating = 0;
+                  newData.fileLocation = 'C://somepath';
+                  newData.dateAdded = moment();
+                  movies.push(newData);
+                })
+              )
+            }
           })
+         
           Promise.all(promises).then(() => {
             console.log('Saving response to local storage...')
             storage.set('movies', movies)
