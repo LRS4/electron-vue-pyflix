@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { performance } = require('perf_hooks');
-const target = 'C:/Users/L.Spencer/Desktop/Movies';
+const target = path.normalize('F:\\Movies');
 
 /**
  * Explores recursively a directory and returns all the filepaths and folderpaths in the callback.
@@ -109,7 +109,7 @@ filewalker(target, function(err, data){
                 // if a season with current series as dirname create seasons array
                 // this will hold the episodes file paths :)
                 series[currentSeries][baseName] = [];
-            } else if (directoryName.includes('Season') && item.includes(currentSeries)) {
+            } else if (directoryName.includes('Season') && item.includes(currentSeries) && !baseName.includes('.srt')) {
                 // else if in a season folder it's an episode
                 // the file paths need pushing to season array :)
                 series[currentSeries][directoryName].push(item);
