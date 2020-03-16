@@ -8,7 +8,7 @@
       <p>{{ movieData.Plot }}</p>
       <p>Played {{ movieData.watchCount }} times</p>
       <p>Added {{ formatDate(movieData.dateAdded) }}</p>
-      <button v-on:click="play">Play</button>
+      <button v-on:click="play(movieData.fileLocation)">Play</button>
       <a v-bind:href="`https://www.imdb.com/title/${movieData.imdbID}/#titleRecs`" target="_blank">More like this</a>
       <div>
         <img v-bind:src="`${ movieData.Poster }`" class="moviePoster" />
@@ -36,7 +36,7 @@ export default {
     };
   },
   methods: {
-    play() {
+    play(filePath) {
       (this.isPlaying == false) ? this.isPlaying = true : this.isPlaying = false;
       storage.get('movies')
       .then(data => {
@@ -51,7 +51,8 @@ export default {
       });
 
       // open file in default application
-      shell.openExternal(path.normalize("C:\\Users\\L.Spencer\\Desktop\\Movies\\Conan the Barbarian (1982).avi")); 
+      console.log(filePath);
+      shell.openExternal(path.normalize(filePath)); 
     },
     formatDate(value) {
       if (value) {
