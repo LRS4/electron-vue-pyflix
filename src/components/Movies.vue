@@ -1,19 +1,24 @@
 <template>
   <div class="movie-grid">
     <button v-on:click="addNewItem">Add new item</button>
-    <b-row v-for="movies in chunkedMovies" v-bind:key="movies.index">
-      <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
-        <router-link v-bind:to="'/movie/' + movie.imdbID">
-          <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
-        </router-link>
-        <p>
-          <span v-if="movie.Title.length <= 17" class="movieTitles">{{ movie.Title }}</span>
-          <span v-else class="movieTitles">{{ (movie.Title).slice(0, 17) }}...</span>
-          <br />
-          <span class="movieYears">{{ movie.Year }}</span>
-        </p>
-      </b-col>
-    </b-row>
+    <div v-if="!moviesData && moviesData.length < 1">
+      Loading...
+    </div>
+    <div v-else>
+      <b-row v-for="movies in chunkedMovies" v-bind:key="movies.index">
+        <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
+          <router-link v-bind:to="'/movie/' + movie.imdbID">
+            <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
+          </router-link>
+          <p>
+            <span v-if="movie.Title.length <= 17" class="movieTitles">{{ movie.Title }}</span>
+            <span v-else class="movieTitles">{{ (movie.Title).slice(0, 17) }}...</span>
+            <br />
+            <span class="movieYears">{{ movie.Year }}</span>
+          </p>
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 
@@ -46,7 +51,7 @@ export default {
         // create new item to add to model
         axios.get('http://www.omdbapi.com/?&t=the count of monte cristo&apikey=ff0c3dab')
         .then(response => {
-          console.log()
+
           if (response.data.Error == 'Movie not found!') { 
             return console.error('Undefined error! The movie could not be found.') 
           }
@@ -114,13 +119,18 @@ export default {
               promises.push(
                 axios.get(`http://www.omdbapi.com/?t=${ item.Title }&y=${ item.Year }&apikey=ff0c3dab`)
                 .then(response => {
+                  if (response.data.Error == 'Movie not found!') { 
+                    return console.error(`Undefined error! The movie ${item.Title} could not be found.`); 
+                  }
+                  
                   let newData = response.data;
                   newData.watchCount = 0;
                   newData.dateLastWatched = 'Not watched';
                   newData.minuteLastWatched = 0;
                   newData.myRating = 0;
-                  newData.fileLocation = 'C://somepath';
+                  newData.fileLocation = item.FileLocation;
                   newData.dateAdded = moment();
+                  console.log(newData);
                   movies.push(newData);
                 })
               )
