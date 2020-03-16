@@ -11,7 +11,6 @@ const target = 'C:/Users/L.Spencer/Desktop/Movies';
  * @param {Function} done 
  */
 function filewalker(dir, done) {
-    var t0 = performance.now(); // initialise performance timer
     let results = [];
 
     fs.readdir(dir, function(err, list) {
@@ -42,14 +41,15 @@ function filewalker(dir, done) {
             });
         });
     });
-    var t1 = performance.now();
-    console.log("Filewalker took " + (t1 - t0) + " milliseconds to complete the index.");
 }
 
 filewalker(target, function(err, data){
     if(err){
         throw err;
     }
+
+    // initialise performance timer
+    var t0 = performance.now(); 
 
     const outputFilePath = path.join(__dirname, '/hdd_data.json');
 
@@ -68,8 +68,8 @@ filewalker(target, function(err, data){
     var currentSeries;
 
     // ["c://some-existent-path/file.txt","c:/some-existent-path/subfolder"]
-    // Requirements for movies: [name, year, fileLocation]
-    // Requirements for series: [name, { season 1 { episode 1: fileLocation, episode 2: fileLocation } }]
+    // Example movie path: Movies\Action\Name (1999).mp4
+    // Example series path: Movies\Series\Name (2014)\Season 2\Episode 6.avi
     data.forEach((item) => {
         let title = path.basename(item);
         let length = title.split(".").length;
@@ -94,26 +94,31 @@ filewalker(target, function(err, data){
             let baseName = path.basename(item); 
 
             // if a series name add to new series object
-            if (directoryName.includes('Series')) {
-                // this also means we've reached a new series so add to output
-                // and clear the object for this iteration
-                if (series != undefined) { outputJSON.push(series) }
-                for (var prop in series) delete series[prop]; // clear object
-                currentSeries = String(baseName);
-                series['Title'] = currentSeries.split(".")[0].split("(")[0].trim();
+            if (item.includes('Series') && baseName == 'Season 1') {
+                // this also means we've reached a new series so need new object
+                series[directoryName] = {};
+                currentSeries = String(directoryName);
+                series[directoryName].Title = currentSeries.split(".")[0].split("(")[0].trim();
                 let year = currentSeries.split(".")[0].split("(")[1];
-                series['Year'] = year.replace(")", "");
-            } else if (directoryName.includes(currentSeries)) {
+                series[directoryName].Year = year.replace(")", "");
+                series[directoryName].Type = 'series';
+                series[directoryName][baseName] = [];
+            } else if (directoryName.includes(currentSeries) && baseName.includes('Season')) {
                 // if a season with current series as dirname create seasons array
                 // this will hold the episodes file paths :)
-                series[baseName] = [];
+                series[currentSeries][baseName] = [];
             } else if (directoryName.includes('Season') && item.includes(currentSeries)) {
                 // else if in a season folder it's an episode
                 // the file paths need pushing to season array :)
-                series[directoryName].push(item);
+                series[currentSeries][directoryName].push(item);
             } 
         }
     })
+
+    // Push each of the series objects to output array
+    for (let key in series) {
+        outputJSON.push(series[key]);
+    }
     
     // Write the built up object to a file as JSON
     fs.appendFile(outputFilePath, JSON.stringify(outputJSON), function(err) {
@@ -122,4 +127,7 @@ filewalker(target, function(err, data){
         }
         console.log(`File hdd_data.json was saved successfully!`);
     });
+
+    var t1 = performance.now();
+    console.log("Filewalker took " + (t1 - t0) + " milliseconds to complete the index.");
 });
