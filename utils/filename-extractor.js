@@ -94,9 +94,11 @@ filewalker(target, function(err, data){
             let baseName = path.basename(item); 
 
             // if a series name add to new series object
-            if (item.includes('Series') && baseName == 'Season 1') {
+            if (item.includes('Series') && baseName.includes('Season')) {
                 // this also means we've reached a new series so need new object
-                series[directoryName] = {};
+                if (directoryName != currentSeries) {
+                    series[directoryName] = {};
+                }
                 currentSeries = String(directoryName);
                 series[directoryName].Title = currentSeries.split(".")[0].split("(")[0].trim();
                 let year = currentSeries.split(".")[0].split("(")[1];
