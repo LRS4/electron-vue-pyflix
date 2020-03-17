@@ -92,15 +92,22 @@ export default {
       .catch(err => {
         console.error(err);
       });
-    },
-    populateMovieData() {
+    }
+  },
+  computed: {
+    chunkedMovies() {
+      // http://forum.vuejs.org/t/v-for-with-css-responsive-grid/7164/2
+      return chunk(this.moviesData, 6);
+    }
+  },
+  created() {
       console.log('Attempting to retrieve movies.json from local storage...');
       storage.isPathExists('movies.json', (itDoes) => {
         if (itDoes) {
           storage.get('movies')
           .then(data => {
             console.log(`${data.length} items retrieved successfully.`);
-            this.moviesData = data;
+            this.moviesData = data.sort((a, b) => a.Title.localeCompare(b.Title)); // sort alphabetical
           })
           .catch(err => {
             console.error(err);
@@ -166,16 +173,6 @@ export default {
         }
       })
     }
-  },
-  computed: {
-    chunkedMovies() {
-      // http://forum.vuejs.org/t/v-for-with-css-responsive-grid/7164/2
-      return chunk(this.moviesData, 6);
-    }
-  },
-  created() {
-    this.populateMovieData()
-  }
 }
 </script>
 
