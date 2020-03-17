@@ -44,7 +44,9 @@
 
     <!-- route outlet -->
     <!-- component matched by the route will render here -->
-    <router-view></router-view>
+    <transition name="view">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
@@ -76,5 +78,23 @@ export default {
 
   .navbar-brand {
     font-family: 'Bebas Neue';
+  }
+
+  .view-enter-active, .view-leave-active {
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease;
+  }
+
+  .view-enter-active {
+    transition-delay: 0.5s;
+  }
+
+  /* When the page enters */
+  .view-enter, .view-leave-to {
+    opacity: 0;
+  }
+
+  /* When the page leaves */
+  .view-enter-to, .view-leave {
+    opacity: 1;
   }
 </style>
