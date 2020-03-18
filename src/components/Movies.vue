@@ -1,6 +1,5 @@
 <template>
   <div class="movie-grid">
-    <button v-on:click="addNewItem">Add new item</button>
     <div v-if="!moviesData && moviesData.length < 1">
       Loading...
     </div>
@@ -10,7 +9,7 @@
           <router-link v-bind:to="'/movie/' + movie.imdbID">
             <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
           </router-link>
-          <p>
+          <p class="movieInformation">
             <span v-if="movie.Title.length <= 17" class="movieTitles">{{ movie.Title }}</span>
             <span v-else class="movieTitles">{{ (movie.Title).slice(0, 17) }}...</span>
             <br />
@@ -199,6 +198,10 @@ a {
   height: 80%;
   width: 100%;
   max-width: 200px;
+  padding: 1px 1px;
+}
+.moviePosters:hover {
+  background-color: white;
 }
 .movieTitles {
   font-family: 'Roboto';
