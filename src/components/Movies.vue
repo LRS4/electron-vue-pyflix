@@ -3,7 +3,7 @@
     <div v-if="!moviesData && moviesData.length < 1">
       Loading...
     </div>
-    <div v-else>
+    <div class="moviesContainer" v-else>
       <b-row v-for="movies in chunkedMovies" v-bind:key="movies.index">
         <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
           <router-link v-bind:to="'/movie/' + movie.imdbID">
@@ -194,10 +194,15 @@ a {
 .b-container {
   width: 100%;
 }
+.moviesContainer {
+  padding: 0px 25px;
+  margin-top: 30px;
+  width: 100%;
+}
 .moviePosters {
   height: 80%;
   width: 100%;
-  max-width: 200px;
+  max-width: 250px;
   padding: 1px 1px;
 }
 .moviePosters:hover {
