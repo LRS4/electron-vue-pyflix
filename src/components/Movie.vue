@@ -5,6 +5,7 @@
       <h3>{{ movieData.Title }}</h3>
       <p>{{ movieData.Year }}</p>
       <p>{{ movieData.Director }}</p>
+      <p>{{ movieData.Genre }}</p>
       <p>{{ movieData.Plot }}</p>
       <p>Played {{ movieData.watchCount }} times</p>
       <p>Added {{ formatDate(movieData.dateAdded) }}</p>

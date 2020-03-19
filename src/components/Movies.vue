@@ -1,12 +1,10 @@
 <template>
-  <div class="movie-grid">
+  <div name="view" class="movie-grid">
     <div v-if="!getMovies && getMovies.length < 1">
       Loading...
     </div>
     <div class="moviesContainer" v-else>
-      <button v-on:click='filterItems("")'>All</button>
-      <button v-on:click='filterItems("War")'>War</button>
-      <b-row v-for="movies in getMovies" v-bind:key="movies.index">
+      <b-row v-for="(movies, index) in getMovies" v-bind:key="`movie-${index}`" is="transition-group" name="fade-out-in" mode="out-in">
         <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
           <router-link v-bind:to="'/movie/' + movie.imdbID">
             <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
@@ -17,7 +15,7 @@
             <br />
             <span class="movieYears">{{ movie.Year }}</span>
           </p>
-        </b-col>
+        </b-col>  
       </b-row>
     </div>
   </div>
@@ -124,7 +122,10 @@ a {
 .moviePosters {
   height: 80%;
   width: 100%;
+  min-height: 330px;
+  max-height: 330px;
   max-width: 250px;
+  min-width: 250px;
   padding: 1px 1px;
 }
 .moviePosters:hover {
@@ -137,5 +138,18 @@ a {
 .movieYears {
   font-family: 'Roboto';
   color: gray;
+}
+.fade-out-in-enter-active,
+.fade-out-in-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-out-in-enter-active {
+  transition-delay: .5s;
+}
+
+.fade-out-in-enter,
+.fade-out-in-leave-active {
+  opacity: 0;
 }
 </style>
