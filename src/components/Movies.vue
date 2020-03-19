@@ -1,10 +1,12 @@
 <template>
   <div class="movie-grid">
-    <div v-if="!moviesData && moviesData.length < 1">
+    <div v-if="!getMovies && getMovies.length < 1">
       Loading...
     </div>
     <div class="moviesContainer" v-else>
-      <b-row v-for="movies in chunkedMovies" v-bind:key="movies.index">
+      <button v-on:click='filterItems("")'>All</button>
+      <button v-on:click='filterItems("War")'>War</button>
+      <b-row v-for="movies in getMovies" v-bind:key="movies.index">
         <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
           <router-link v-bind:to="'/movie/' + movie.imdbID">
             <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
@@ -28,20 +30,13 @@ Just replace “weather.json” with the API URL.
 Fetch has a few shortcomings. Like we demonstrated earlier with fetch, we needed to chain two then functions to the call the get the data. 
 This is simplified with axios. Let’s replace our current fetch function with axios.
 */
+import { mapGetters } from 'vuex';
 import axios from 'axios';
 import moment from 'moment';
-const fs = require('fs');
-const path = require('path');
 const storage = require('electron-storage');
-const chunk = require('chunk');
 
 export default {
   name: 'Movies',
-  data() {
-    return {
-      moviesData: []
-    };
-  },
   methods: {
     addNewItem() {
       storage.get('movies')
@@ -91,87 +86,14 @@ export default {
       .catch(err => {
         console.error(err);
       });
+    },
+    filterItems(filter) {
+      this.$store.dispatch('setFilter', filter)
     }
   },
   computed: {
-    chunkedMovies() {
-      // http://forum.vuejs.org/t/v-for-with-css-responsive-grid/7164/2
-      return chunk(this.moviesData, 6);
-    }
-  },
-  created() {
-      console.log('Attempting to retrieve movies.json from local storage...');
-      storage.isPathExists('movies.json', (itDoes) => {
-        if (itDoes) {
-          storage.get('movies')
-          .then(data => {
-            console.log(`${data.length} items retrieved successfully.`);
-            this.moviesData = data.sort((a, b) => a.Title.localeCompare(b.Title)); // sort alphabetical
-          })
-          .catch(err => {
-            console.error(err);
-          });
-        } else {
-          // the values for the API lookup from HDD
-          const movieItemsHDD = JSON.parse(fs.readFileSync(path.normalize('C:\\Users\\L.Spencer\\Documents\\GitHub\\electron-vue-pyflix\\utils\\hdd_data.json')));
-      
-          // https://stackoverflow.com/questions/56532652/axios-get-then-in-a-for-loop
-          let movies = [];
-          let promises = [];
-          console.log('Calling OMDB API...');
-
-          movieItemsHDD.forEach(item => {
-            if (item.Type == 'movie') {
-              promises.push(
-                axios.get(`http://www.omdbapi.com/?t=${ item.Title }&y=${ item.Year }&apikey=ff0c3dab`)
-                .then(response => {
-                  if (response.data.Error == 'Movie not found!') { 
-                    return console.error(`Undefined error! The movie ${item.Title} could not be found.`); 
-                  }
-                  
-                  let newData = response.data;
-                  newData.watchCount = 0;
-                  newData.dateLastWatched = 'Not watched';
-                  newData.minuteLastWatched = 0;
-                  newData.myRating = 0;
-                  newData.fileLocation = item.FileLocation;
-                  newData.dateAdded = moment();
-                  console.log(newData);
-                  movies.push(newData);
-                })
-              )
-            } else {
-              promises.push(
-                axios.get(`http://www.omdbapi.com/?t=${ item.Title }&apikey=ff0c3dab`)
-                .then(response => {
-                  let newData = response.data;
-                  newData.watchCount = 0;
-                  newData.dateLastWatched = 'Not watched';
-                  newData.minuteLastWatched = 0;
-                  newData.myRating = 0;
-                  newData.fileLocation = 'C://somepath';
-                  newData.dateAdded = moment();
-                  movies.push(newData);
-                })
-              )
-            }
-          })
-         
-          Promise.all(promises).then(() => {
-            console.log('Saving response to local storage...')
-            storage.set('movies', movies)
-            .then(() => {
-              console.log('The file was successfully written to local storage.'); // C:\Users\L.Spencer\AppData\Roaming\electron-vue\movies.json
-              console.log(`${promises.length} items were saved successfully.`)
-            })
-            .catch(err => {
-              console.error(err);
-            });
-            this.moviesData = movies;
-          });
-        }
-      })
-    }
+    ...mapGetters(['getMovies'])
+  }
 }
 </script>
 

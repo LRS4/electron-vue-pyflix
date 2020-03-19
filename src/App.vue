@@ -51,15 +51,19 @@
 </template>
 
 <script>
-/* Before Vue Router was implemented
-import Weather from './components/Weather.vue'
+import { mapState } from 'vuex'
+
 export default {
   name: 'App',
-  components: {
-    Weather
+  mounted() {
+    this.$store.dispatch('loadMovies');
+  },
+  computed: {
+    ...mapState([
+      'movies'
+    ])
   }
 }
-*/
 </script>
 
 <style>
