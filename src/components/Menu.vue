@@ -11,17 +11,17 @@
           <b-navbar-nav>
             <b-nav-item to="/about">About</b-nav-item>
             <b-nav-item to="/" v-on:click='filterItems("")'>All</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Action")'>Action</b-nav-item>            
-            <b-nav-item to="/" v-on:click='filterItems("Adventure")'>Adventure</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Animation")'>Animation</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Biography")'>Biography</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Comedy")'>Comedy</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Crime")'>Crime</b-nav-item>            
-            <b-nav-item to="/" v-on:click='filterItems("Drama")'>Drama</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Horror")'>Horror</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Sci-Fi")'>Sci-Fi</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("Thriller")'>Thriller</b-nav-item>
-            <b-nav-item to="/" v-on:click='filterItems("War")'>War</b-nav-item>
+            <b-nav-item to="/movies/action" v-on:click='filterItems("Action")'>Action</b-nav-item>            
+            <b-nav-item to="/movies/adventure" v-on:click='filterItems("Adventure")'>Adventure</b-nav-item>
+            <b-nav-item to="/movies/animation" v-on:click='filterItems("Animation")'>Animation</b-nav-item>
+            <b-nav-item to="/movies/biography" v-on:click='filterItems("Biography")'>Biography</b-nav-item>
+            <b-nav-item to="/movies/comedy" v-on:click='filterItems("Comedy")'>Comedy</b-nav-item>
+            <b-nav-item to="/movies/crime" v-on:click='filterItems("Crime")'>Crime</b-nav-item>            
+            <b-nav-item to="/movies/drama" v-on:click='filterItems("Drama")'>Drama</b-nav-item>
+            <b-nav-item to="/movies/horror" v-on:click='filterItems("Horror")'>Horror</b-nav-item>
+            <b-nav-item to="/movies/scifi" v-on:click='filterItems("Sci-Fi")'>Sci-Fi</b-nav-item>
+            <b-nav-item to="/movies/thriller" v-on:click='filterItems("Thriller")'>Thriller</b-nav-item>
+            <b-nav-item to="/movies/war" v-on:click='filterItems("War")'>War</b-nav-item>
           </b-navbar-nav>  
 
           <b-navbar-nav>
@@ -75,6 +75,16 @@ export default {
 </script>
 
 <style scoped>
+  nav {
+    background-color: black !important;
+  }
+  #txtName {
+    background-color: black;
+    color: white;
+  }
+  #txtName::placeholder {
+    color: white;
+  }
   .nav-link {
     font-weight: bold;
     padding: 8px 8px 8px 8px;
@@ -82,5 +92,13 @@ export default {
   .nav-link:hover {
     border-bottom: 3px solid white;
     padding: 8px 8px 5px 8px;
+  }
+  .nav-link.router-link-exact-active {
+    border-bottom: 3px solid white;
+    padding: 8px 8px 5px 8px;
+  }
+  .form-control:focus {
+    border-color: gray;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 0, 0, 0.6);
   }
 </style>

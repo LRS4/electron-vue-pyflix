@@ -13,6 +13,11 @@ const routes = [
     component: Movies
   },
   {
+    path: "/movies/:filter",
+    name: "movieFilter",
+    component: Movies
+  },
+  {
     path: "/movie/:id",
     name: "movie",
     component: Movie
