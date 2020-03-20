@@ -124,8 +124,8 @@ a {
   width: 100%;
   min-height: 330px;
   max-height: 330px;
-  max-width: 250px;
-  min-width: 250px;
+  max-width: 240px;
+  min-width: 240px;
   padding: 1px 1px;
 }
 .moviePosters:hover {
