@@ -105,10 +105,14 @@ export const store = new Vuex.Store({
     },
     getters: { // computed
         getMovies(state) {
+            let genres = ['Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Drama', 'Horror', 'Sci-Fi', 'Thriller', 'War'];  
             if (state.filter == undefined || state.filter == "") {
                 return chunk(state.movies, 6);
-            } else {
+            } else if (genres.includes(state.filter)) {
                 return chunk(state.movies.filter(item => item.Genre.includes(state.filter)), 6);
+            } else {
+                let filter = (state.filter).toLowerCase();
+                return chunk(state.movies.filter(item => (item.Title).toLowerCase().includes(filter)), 6);
             }
         }
     }
