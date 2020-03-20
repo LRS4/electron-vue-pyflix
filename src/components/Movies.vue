@@ -141,11 +141,11 @@ a {
 }
 .fade-out-in-enter-active,
 .fade-out-in-leave-active {
-  transition: opacity .5s;
+  transition:  opacity 0.5s ease-in-out, transform 0.5s ease;
 }
 
 .fade-out-in-enter-active {
-  transition-delay: .5s;
+  transition-delay: 0.5s;
 }
 
 .fade-out-in-enter,

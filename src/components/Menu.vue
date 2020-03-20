@@ -73,3 +73,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .nav-link {
+    font-weight: bold;
+    padding: 8px 8px 8px 8px;
+  }
+  .nav-link:hover {
+    border-bottom: 3px solid white;
+    padding: 8px 8px 5px 8px;
+  }
+</style>
