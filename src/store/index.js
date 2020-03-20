@@ -13,7 +13,8 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: { // data
         movies : [],
-        filter: ""
+        filter: "",
+        loading: true
     },
     actions: { // methods
         loadMovies({ commit }) {
@@ -91,8 +92,12 @@ export const store = new Vuex.Store({
             })
         },   
         setFilter({ commit }, value) {
-            console.log(value)
+            // console.log(value)
             commit('SET_FILTER', value);
+        },
+        setLoadingStatus({commit}, status) {
+            console.log(status);
+            commit('SET_LOADING', status);
         }
     },
     mutations: { // setters
@@ -101,13 +106,19 @@ export const store = new Vuex.Store({
         },
         SET_FILTER(state, value) {
             state.filter = value
+        },
+        SET_LOADING(state, status) {
+            state.loading = status
         }
     },
     getters: { // computed
         getMovies(state) {
-            let genres = ['Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Drama', 'Horror', 'Sci-Fi', 'Thriller', 'War'];  
+            let genres = ['Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Drama', 'Horror', 'Sci-Fi', 'Thriller', 'War']; 
+            let yearRegex = /[0-9][0-9][0-9][0-9]/;
             if (state.filter == undefined || state.filter == "") {
                 return chunk(state.movies, 6);
+            } else if (yearRegex.test(state.filter)) {
+                return chunk(state.movies.filter(item => item.Year == state.filter), 6);
             } else if (genres.includes(state.filter)) {
                 return chunk(state.movies.filter(item => item.Genre.includes(state.filter)), 6);
             } else {

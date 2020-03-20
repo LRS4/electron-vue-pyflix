@@ -1,23 +1,29 @@
 <template>
   <div name="view" class="movie-grid">
-    <div v-if="!getMovies && getMovies.length < 1">
-      Loading...
-    </div>
-    <div class="moviesContainer" v-else>
-      <b-row v-for="(movies, index) in getMovies" v-bind:key="`movie-${index}`" is="transition-group" name="fade-out-in" mode="out-in">
-        <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
-          <router-link v-bind:to="'/movie/' + movie.imdbID">
-            <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
-          </router-link>
-          <p class="movieInformation">
-            <span v-if="movie.Title.length <= 17" class="movieTitles">{{ movie.Title }}</span>
-            <span v-else class="movieTitles">{{ (movie.Title).slice(0, 17) }}...</span>
-            <br />
-            <span class="movieYears">{{ movie.Year }}</span>
-          </p>
-        </b-col>  
-      </b-row>
-    </div>
+    <transition name="loading-fade">
+      <div class="container h-100" v-show="loading">
+        <div class="row h-100 justify-content-center align-items-center">
+          <h1 class="loadingBanner">Pyflix</h1> 
+        </div>  
+      </div>
+    </transition>
+    <transition name="movies-fade">
+      <div class="moviesContainer" v-show="!loading">
+        <b-row v-for="(movies, index) in getMovies" v-bind:key="`movie-${index}`" is="transition-group" name="fade-out-in" mode="out-in">
+          <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
+            <router-link v-bind:to="'/movie/' + movie.imdbID">
+              <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
+            </router-link>
+            <p class="movieInformation">
+              <span v-if="movie.Title.length <= 17" class="movieTitles">{{ movie.Title }}</span>
+              <span v-else class="movieTitles">{{ (movie.Title).slice(0, 17) }}...</span>
+              <br />
+              <span class="movieYears">{{ movie.Year }}</span>
+            </p>
+          </b-col>  
+        </b-row>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -86,11 +92,22 @@ export default {
       });
     },
     filterItems(filter) {
-      this.$store.dispatch('setFilter', filter)
+      this.$store.dispatch('setFilter', filter);
+    },
+    stopLoading() {
+      setTimeout(() => {
+        this.$store.dispatch('setLoadingStatus', false);
+      }, 3000);
     }
   },
   computed: {
+    loading() {
+      return this.$store.state.loading
+    }, 
     ...mapGetters(['getMovies'])
+  },
+  created() {
+    this.stopLoading();
   }
 }
 </script>
@@ -139,17 +156,54 @@ a {
   font-family: 'Roboto';
   color: gray;
 }
+
+/* The individual movies in the grid on filter change */
 .fade-out-in-enter-active,
 .fade-out-in-leave-active {
   transition:  opacity 0.5s ease-in-out, transform 0.5s ease;
 }
 
 .fade-out-in-enter-active {
-  transition-delay: 0.5s;
+  transition-delay: 0.s;
 }
 
 .fade-out-in-enter,
 .fade-out-in-leave-active {
+  opacity: 0;
+}
+
+/* The initial loading screen fading out */
+.loadingBanner {
+  font-family: 'Bebas Neue';
+  font-size: 160px;
+  margin-top: 25%;
+}
+.loading-fade-enter-active,
+.loading-fade-leave-active {
+  transition:  opacity 0.5s ease-out, transform 0.5s ease;
+}
+
+.loading-fade-enter-active {
+  transition-delay: 0.5s;
+}
+
+.loading-fade-enter,
+.loading-fade-leave-active {
+  opacity: 0;
+}
+
+/* The movies grid fading in after load */
+.movies-fade-enter-active,
+.movies-fade-leave-active {
+  transition:  opacity 0.7s ease-in, transform 0.7s ease;
+}
+
+.movies-fade-enter-active {
+  transition-delay: 0.7s;
+}
+
+.movies-fade-enter,
+.movies-fade-leave-active {
   opacity: 0;
 }
 </style>
