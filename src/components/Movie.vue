@@ -40,38 +40,107 @@
           <div class="col-sm-6">
             <b-button block variant="outline-success" pill v-on:click="play(movieData.fileLocation)">Play <b-icon icon="play-fill"></b-icon></b-button>
           </div>
-          <div class="col-sm-6">
-            <b-button block variant="outline-success" pill v-bind:href="`https://www.imdb.com/title/${movieData.imdbID}/#titleRecs`" target="_blank">View details <b-icon icon="info-square"></b-icon></b-button>
+          <div class="col-sm-3">
+            <b-button block variant="outline-success" pill v-b-modal.modal-center>Details <b-icon icon="info"></b-icon></b-button>
+          </div>
+          <div class="col-sm-3">
+            <b-button block variant="outline-success" pill v-bind:href="`https://www.imdb.com/title/${movieData.imdbID}/#titleRecs`" target="_blank">More like this <b-icon icon="box-arrow-up-right"></b-icon></b-button>
           </div>
         </div>
         <!-- Row with three sub-cols for watch information -->
         <div class="row movieSubRows">
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <p v-if="movieData.watchCount == 0"><b-icon icon="eye-slash" style="color: white;"></b-icon> Not watched</p>
             <p v-else><b-icon icon="eye" style="color: white;"></b-icon> Played {{ movieData.watchCount }} times</p>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-6">
             <p v-if="movieData.watchCount == 0" ></p>
-            <p v-else>Last watched {{ formatDate(movieData.lastWatched) }}</p>
+            <p v-else><b-icon icon="arrow-clockwise" style="color: white;"></b-icon> Last watched {{ formatDate(movieData.lastWatched) }}</p>
           </div>
-          <div class="col-sm-4">
-            <p>Added {{ formatDate(movieData.dateAdded) }}</p>
-          </div>
-        </div>
-        <!-- Row for 'More Like This' -->
-        <div class="row movieSubRows">
-          <div class="col-sm-4">
-            FILM
-          </div>
-          <div class="col-sm-4">
-            FILM
-          </div>
-          <div class="col-sm-4">
-            FILM
+          <div class="col-sm-3">
+            <p><b-icon icon="plus" style="color: white;"></b-icon> Added {{ formatDate(movieData.dateAdded) }}</p>
           </div>
         </div>
       </b-col>
     </b-row>
+    <!-- Details modal -->
+     <b-modal
+      id="modal-center"
+      size="xl"
+      centered
+      :title="movieData.Title"
+      :header-bg-variant="headerBgVariant"
+      :header-text-variant="headerTextVariant"
+      :body-bg-variant="bodyBgVariant"
+      :body-text-variant="bodyTextVariant"
+      :footer-bg-variant="footerBgVariant"
+      :footer-text-variant="footerTextVariant"
+      >
+      <div class="movieModalInfo">
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">Released</p> 
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4">{{ movieData.Released }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">Director</p> 
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4"> {{ movieData.Director }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">Writer</p> 
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4">{{ movieData.Writer }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">Actors</p> 
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4">{{ movieData.Actors }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">Box Office</p> 
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4">{{ movieData.BoxOffice }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">Awards</p> 
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4">{{ movieData.Awards }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">Production</p> 
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4">{{ movieData.Production }}</p>
+          </div>
+        </div>
+      </div>
+      <template v-slot:modal-footer="{ ok }">
+        <!-- Emulate built in modal footer ok and cancel button actions -->
+        <b-button size="md" pill variant="light" @click="ok()">
+          OK
+        </b-button>
+      </template>
+    </b-modal>
   </b-container>
 </template>
 
@@ -86,7 +155,13 @@ export default {
   data() {
     return {
       movieId: this.$route.params.id,
-      isPlaying: false
+      isPlaying: false,
+      headerBgVariant: 'dark',
+      headerTextVariant: 'light',
+      bodyBgVariant: 'dark',
+      bodyTextVariant: 'light',
+      footerBgVariant: 'dark',
+      footerTextVariant: 'dark',
     };
   },
   methods: {
@@ -170,5 +245,9 @@ a {
 }
 .movieSubRows {
   margin-top: 40px;
+}
+.movieModalInfo p {
+  font-size: 20px;
+  font-family: 'Roboto';
 }
 </style>
