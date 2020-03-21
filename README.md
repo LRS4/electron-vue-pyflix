@@ -34,12 +34,14 @@ npm run lint
 * ElectronJS
 
 ### Packages
+* vuex
 * vue-router
 * bootstrap-vue
 * axios
 * moment-js
 * electron-storage
 * chunk
+* [vue-star-rating](https://github.com/craigh411/vue-star-rating)
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
