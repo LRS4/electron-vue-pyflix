@@ -98,8 +98,10 @@ export const store = new Vuex.Store({
             commit('SET_FILTER', value);
         },
         setLoadingStatus({commit}, status) {
-            console.log(status);
             commit('SET_LOADING', status);
+        },
+        updateMovie({ commit }, payload) {
+            commit('UPDATE_MOVIE', payload)
         }
     },
     mutations: { // setters
@@ -111,6 +113,16 @@ export const store = new Vuex.Store({
         },
         SET_LOADING(state, status) {
             state.loading = status
+        },
+        UPDATE_MOVIE (state, payload) {
+            const { updateType, lastWatched, rating, movieId } = payload;
+            let movie = state.movies.find(item => item.imdbID == movieId);
+            if (updateType == 'play') {
+                movie.watchCount += 1;
+                movie.lastWatched = lastWatched;
+            } else if (updateType == 'rate') {
+                movie.myRating = rating;
+            }
         }
     },
     getters: { // computed

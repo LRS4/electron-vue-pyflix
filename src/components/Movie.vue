@@ -38,7 +38,7 @@
         <!-- Row with two sub-cols for action buttons -->
         <div class="row movieSubRows">
           <div class="col-sm-6">
-            <b-button block variant="outline-success" pill v-on:click="play(movieData.fileLocation)">Play <b-icon icon="play-fill"></b-icon></b-button>
+            <b-button block variant="outline-success" pill v-on:click="playMovie(movieData.fileLocation)">Play <b-icon icon="play-fill"></b-icon></b-button>
           </div>
           <div class="col-sm-3">
             <b-button block variant="outline-success" pill v-b-modal.modal-center>Details <b-icon icon="info"></b-icon></b-button>
@@ -59,6 +59,29 @@
           </div>
           <div class="col-sm-3">
             <p><b-icon icon="plus" style="color: white;"></b-icon> Added {{ formatDate(movieData.dateAdded) }}</p>
+          </div>
+        </div>
+        <!-- Row with two sub-cols for add favourite and my rating -->
+        <div class="row movieSubRows">
+          <div class="col-sm-3">
+          </div>
+          <div class="col-sm-6">
+            <star-rating
+            @rating-selected="setRating"
+            v-bind:rating="movieData.myRating"
+            v-bind:increment="0.5"
+            v-bind:max-rating="10"
+            v-bind:star-size="30"
+            v-bind:show-rating="false"
+            active-color="#5cb85c"
+            border-color="black"
+            v-bind:border-width="2"
+            v-bind:glow="1"
+            
+            >
+            </star-rating>
+          </div>
+          <div class="col-sm-3">
           </div>
         </div>
       </b-col>
@@ -146,6 +169,7 @@
 
 <script>
 import moment from 'moment';
+import StarRating from 'vue-star-rating';
 const storage = require('electron-storage');
 const shell = require('electron').shell;
 const path = require('path');
@@ -164,9 +188,14 @@ export default {
       footerTextVariant: 'dark',
     };
   },
+  components: {
+    StarRating
+  },
   methods: {
-    play(filePath) {
+    playMovie(filePath) {
       (this.isPlaying == false) ? this.isPlaying = true : this.isPlaying = false;
+      
+      // update data in cache
       storage.get('movies')
       .then(data => {
           for (let movie in data) {
@@ -174,14 +203,43 @@ export default {
                   data[movie].watchCount += 1;
                   data[movie].lastWatched = moment();
                   storage.set('movies', data);
-                  return console.log("Watch count updated!");
+                  return console.log("Cache updated...");
               }
           }
       });
 
+      // update view model
+      this.$store.dispatch('updateMovie', {
+        updateType: 'play',
+        lastWatched: moment(),
+        movieId: this.movieId
+      })
+      console.log("View model updated...");
+
       // open file in default application
-      console.log(filePath);
+      console.log("File path accessed --> " + filePath);
       shell.openExternal(path.normalize(filePath)); 
+    },
+    setRating(rating) {
+      // update cache
+      storage.get('movies')
+      .then(data => {
+          for (let movie in data) {
+              if (data[movie].imdbID == this.movieId) {
+                  data[movie].myRating = rating;
+                  storage.set('movies', data);
+                  return console.log("Cache updated...");
+              }
+          }
+      });
+
+      // update view model
+      this.$store.dispatch('updateMovie', {
+        updateType: 'rate',
+        rating: rating,
+        movieId: this.movieId
+      })
+      console.log("View model updated...")
     },
     formatDate(value) {
       if (value) {
