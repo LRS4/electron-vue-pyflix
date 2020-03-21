@@ -53,6 +53,7 @@ export const store = new Vuex.Store({
                         newData.dateLastWatched = 'Not watched';
                         newData.minuteLastWatched = 0;
                         newData.myRating = 0;
+                        newData.isFavourite = 0;
                         newData.fileLocation = item.FileLocation;
                         newData.dateAdded = moment();
                         console.log(newData);
@@ -68,6 +69,7 @@ export const store = new Vuex.Store({
                         newData.dateLastWatched = 'Not watched';
                         newData.minuteLastWatched = 0;
                         newData.myRating = 0;
+                        newData.isFavourite = 0;
                         newData.fileLocation = 'C://somepath';
                         newData.dateAdded = moment();
                         movies.push(newData);
