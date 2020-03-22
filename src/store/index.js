@@ -64,13 +64,25 @@ export const store = new Vuex.Store({
                     promises.push(
                         axios.get(`http://www.omdbapi.com/?t=${ item.Title }&apikey=ff0c3dab`)
                         .then(response => {
-                        let newData = response.data;
+                        let newData = response.data; 
+                        
+                        // add seasons arrays to series object
+                        // these contain episode file locations
+                        let seasons = [];
+                        if (item.Type == 'series') { 
+                            for (let key in item) {
+                                if (key.includes('Season')) {
+                                    seasons.push(item[key]);
+                                }
+                            }
+                        }
+
+                        newData.seasons = seasons;
                         newData.watchCount = 0;
                         newData.dateLastWatched = 'Not watched';
                         newData.minuteLastWatched = 0;
                         newData.myRating = 0;
                         newData.isFavourite = 0;
-                        newData.fileLocation = 'C://somepath';
                         newData.dateAdded = moment();
                         movies.push(newData);
                         })
@@ -88,7 +100,7 @@ export const store = new Vuex.Store({
                     .catch(err => {
                     console.error(err);
                     });
-                    commit('SET_MOVIES', movies);
+                    commit('SET_MOVIES', movies.sort((a, b) => a.Title.localeCompare(b.Title)));
                 });
                 }
             })

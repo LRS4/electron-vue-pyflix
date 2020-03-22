@@ -33,7 +33,7 @@
         <!-- Row with two sub-cols for action buttons -->
         <div class="row movieSubRows">
           <div class="col-sm-6">
-            <b-button block variant="outline-success" pill v-on:click="playMovie(movieData.fileLocation)">Play <b-icon icon="play-fill"></b-icon></b-button>
+            <b-button block variant="outline-success" pill v-on:click="playMovie(movieData.seasons[0][0])">Play first episode <b-icon icon="play-fill"></b-icon></b-button>
           </div>
           <div class="col-sm-3">
             <b-button block variant="outline-success" pill v-b-modal.modal-center>Details <b-icon icon="info"></b-icon></b-button>
@@ -41,6 +41,17 @@
           <div class="col-sm-3">
             <b-button block variant="outline-success" pill v-bind:href="`https://www.imdb.com/title/${movieData.imdbID}/#titleRecs`" target="_blank">More like this <b-icon icon="box-arrow-up-right"></b-icon></b-button>
           </div>
+        </div>
+        <!-- Seasons accordion -->
+        <div role="tablist" class="movieSubRows">
+          <b-card no-body class="mb-1" v-for="(season, season_index) in movieData.seasons" v-bind:key="`season-${season_index}`">
+            <b-card-header header-tag="header" class="p-0" role="tab">
+              <b-button block href="#" v-b-toggle="'accordion-' + season_index" variant="success">Season {{ season_index + 1 }} <b-icon icon="list"></b-icon></b-button>
+            </b-card-header>
+            <b-collapse :id="'accordion-' + season_index" class="series-accordion" accordion="my-accordion" role="tabpanel">
+              <b-button v-for="(episode, episode_index) in season" v-bind:key="`episode-${episode_index}`" v-on:click="playMovie(episode)" block variant="outline-success">Episode {{ episode_index + 1 }}<b-icon icon="play-fill"></b-icon></b-button>
+            </b-collapse> 
+          </b-card>
         </div>
         <!-- Row with three sub-cols for watch information -->
         <div class="row movieSubRows">
@@ -238,7 +249,22 @@ export default {
   computed: {
     movieData() {
         let result = this.$store.state.movies.find(item => item.imdbID == this.movieId);
-        console.log(result)
+        console.log(result);
+
+        // hack to place episodes in order 1-20 etc should be refactored to initial load
+        let seasons = [];
+        for (let index in result.seasons) {
+          result.seasons[index].sort((a, b) => {
+            if (parseInt(a.split("Episode ")[1].split('.')[0]) < parseInt(b.split("Episode ")[1].split(".")[0])) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
+          seasons.push(result.seasons[index]);
+        }
+        result.seasons = seasons;
+
         if (result != undefined) {
             return result;
         } else {
@@ -264,7 +290,7 @@ li {
   margin: 0 10px;
 }
 a {
-  color: #42b983;
+  color: #5cb85c;
 }
 .movieContainer {
   width: 100%;
@@ -293,5 +319,20 @@ a {
 .movieModalInfo p {
   font-size: 20px;
   font-family: 'Roboto';
+}
+.series-accordion {
+  background-color: black !important;
+  border-color: black !important;
+}
+.card {
+  background-color: black !important;
+  border-color: transparent !important;
+}
+.card-body {
+  background-color: black !important;
+  border-color: black !important;
+}
+.btn-success {
+  color: black !important;
 }
 </style>
