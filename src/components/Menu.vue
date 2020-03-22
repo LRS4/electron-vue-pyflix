@@ -53,12 +53,110 @@
                 variant="outline-success" 
                 class="my-2 my-sm-0" 
                 v-b-popover.hover="'Refresh the data source.'"
+                v-b-modal.modal
+                @ok="refreshData()"
                 >
                 <b-icon class="refreshDataIcon" icon="arrow-repeat"></b-icon>
               </b-button>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
+
+      <b-modal
+      id="modal"
+      size="lg"
+      title="Are you sure?"
+      :header-bg-variant="headerBgVariant"
+      :header-text-variant="headerTextVariant"
+      :body-bg-variant="bodyBgVariant"
+      :body-text-variant="bodyTextVariant"
+      :footer-bg-variant="footerBgVariant"
+      :footer-text-variant="footerTextVariant"
+      v-on:ok="refreshData()"
+      centered
+      >
+      <div class="confirmRefreshModal">
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="my-4">
+              This operation will index the data source and use that to query the OMDB API for movie information and store file locations.
+            </p>
+            <p>
+              In order for this to work the folder must be in a specific set-up usually as 'Title (Year)'
+            </p>
+            <p>
+              As shown in the example on the right, the folder structure is set out with a Movie folder containing various category Folders with movies
+              within them. They are all in the format 'Title (YYYY)'. The folder also contains a 'Series' folder with Season folders, with episodes inside.
+            </p>
+            <p>
+              This layout is perfect, and should be imitated exactly to get the best results!
+            </p>
+          </div>
+          <div class="col-sm-6">
+            <p class="my-4">Example folder structure that would index perfectly...</p>
+            <ul> 
+              <li>Movies</li>
+                <ul>
+                  <li>Action</li>
+                  <ul> 
+                    <li>MovieName (YYYY)</li>
+                    <li>MovieName (YYYY)</li>
+                    <li>MovieName (YYYY)</li>
+                  </ul>
+                </ul>
+                <ul>
+                  <li>Adventure</li>
+                  <ul> 
+                    <li>MovieName (YYYY)</li>
+                    <li>MovieName (YYYY)</li>
+                    <li>MovieName (YYYY)</li>
+                  </ul>
+                </ul>
+                <ul>
+                  <li>Thriller</li>
+                  <ul> 
+                    <li>MovieName (YYYY)</li>
+                    <li>MovieName (YYYY)</li>
+                    <li>MovieName (YYYY)</li>
+                  </ul>
+                </ul>
+                <ul>
+                  <li>Series</li>
+                  <ul> 
+                    <li>SeriesName (YYYY)</li>
+                    <ul>
+                      <li>Season 1</li>
+                        <ul>
+                          <li>Episode 1</li>
+                          <li>Episode 2</li>
+                          <li>Episode 3</li>
+                          <li>Episode 4</li>
+                          <li>...</li>
+                        </ul>
+                      <li>Season 2</li>
+                        <ul>
+                          <li>Episode 1</li>
+                          <li>Episode 2</li>
+                          <li>Episode 3</li>
+                          <li>Episode 4</li>
+                          <li>...</li>
+                        </ul>
+                    </ul>
+                    <li>SeriesName (YYYY)</li>
+                      <ul>
+                        <li>Episode 1</li>
+                        <li>Episode 2</li>
+                        <li>Episode 3</li>
+                        <li>Episode 4</li>
+                        <li>...</li>
+                      </ul>
+                    </ul>
+                  </ul>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </b-modal>
     </div>
 </template>
 
@@ -67,12 +165,25 @@ export default {
   name: 'Menu',
   data() {
     return {
-      searchInput: ''
+      searchInput: '',
+      headerBgVariant: 'dark',
+      headerTextVariant: 'light',
+      bodyBgVariant: 'dark',
+      bodyTextVariant: 'light',
+      footerBgVariant: 'dark',
+      footerTextVariant: 'dark',
     }
   },
   methods: {
     filterItems(filter) {
         this.$store.dispatch('setFilter', filter)
+    },
+    refreshData() {
+      console.log('Data refresh started...');
+      this.$store.dispatch('setLoadingStatus', true);
+      setTimeout(() => {
+        this.$store.dispatch('setLoadingStatus', false);
+      }, 4500);
     }
   }
 }
@@ -112,5 +223,9 @@ export default {
   .refreshDataIcon {
     height: 18px;
     width: 18px;
+  }
+  .confirmRefreshModal { 
+    font-size: 17px;
+    font-family: 'Roboto';
   }
 </style>
