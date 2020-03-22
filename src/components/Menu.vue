@@ -48,7 +48,14 @@
               type="search"
               >
               </b-form-input>
-              <!-- <b-button size="sm" class="my-2 my-sm-0" type="submit">Search </b-button> -->
+              <b-button 
+                size="sm" 
+                variant="outline-success" 
+                class="my-2 my-sm-0" 
+                v-b-popover.hover="'Refresh the data source.'"
+                >
+                <b-icon class="refreshDataIcon" icon="arrow-repeat"></b-icon>
+              </b-button>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -101,5 +108,9 @@ export default {
   .form-control:focus {
     border-color: gray;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 0, 0, 0.6);
+  }
+  .refreshDataIcon {
+    height: 18px;
+    width: 18px;
   }
 </style>
