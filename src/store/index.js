@@ -149,7 +149,7 @@ export const store = new Vuex.Store({
                 return chunk(state.movies.filter(item => item.Genre.includes(state.filter)), 6);
             } else {
                 let filter = (state.filter).toLowerCase();
-                return chunk(state.movies.filter(item => (item.Title).toLowerCase().includes(filter)), 6);
+                return chunk(state.movies.filter(item => (item.Title).toLowerCase().includes(filter) || (item.Actors).toLowerCase().includes(filter)), 6);
             }
         }
     }
