@@ -11,7 +11,10 @@
       <div class="moviesContainer" v-show="!loading">
         <b-row v-for="(movies, index) in getMovies" v-bind:key="`movie-${index}`" is="transition-group" name="fade-out-in" mode="out-in">
           <b-col v-for="movie in movies" v-bind:key="movie.imdbID">
-            <router-link v-bind:to="'/movie/' + movie.imdbID">
+            <router-link v-bind:to="'/series/' + movie.imdbID" v-if="movie.Type == 'series'"> 
+              <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
+            </router-link>
+            <router-link v-bind:to="'/movie/' + movie.imdbID" v-else>
               <img v-bind:src="`${ movie.Poster }`" class="moviePosters" />
             </router-link>
             <p class="movieInformation">
