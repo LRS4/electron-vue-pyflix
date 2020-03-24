@@ -5,6 +5,8 @@
         <div class="row h-100 justify-content-center align-items-center">
           <h1 class="loadingBanner">Pyflix</h1> 
         </div>  
+        <b-spinner variant="success" type="grow" label="Spinning"></b-spinner>
+        <p v-for="(message, index) in refreshMessages" v-bind:key="index">{{ message }}</p>
       </div>
     </transition>
     <transition name="movies-fade">
@@ -107,6 +109,9 @@ export default {
     loading() {
       return this.$store.state.loading
     }, 
+    refreshMessages() {
+      return this.$store.state.refreshMessages
+    },
     ...mapGetters(['getMovies'])
   },
   created() {

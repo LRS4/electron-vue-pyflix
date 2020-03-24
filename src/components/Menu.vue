@@ -25,14 +25,16 @@
           </b-navbar-nav>  
 
           <b-navbar-nav>
-            <b-nav-item-dropdown left>
+            <b-nav-item-dropdown class="dropdown-filters" left>
               <!-- Using 'button-content' slot -->
               <template v-slot:button-content>
                 <b>Filters</b>
               </template>
-              <b-dropdown-item href="#">Top Rated</b-dropdown-item>
-              <b-dropdown-item href="#">Most Watched</b-dropdown-item>
-              <b-dropdown-item href="#">Recently Added</b-dropdown-item>
+              <div class="dropdown-filters">
+                <b-dropdown-item varient="dark" v-on:click='filterItems("MostWatched")' href="#">Most Watched</b-dropdown-item>
+                <b-dropdown-item varient="dark" v-on:click='filterItems("RecentlyAdded")' href="#">Recently Added</b-dropdown-item>
+                <b-dropdown-item varient="dark" v-on:click='filterItems("TopRated")' href="#">Top Rated</b-dropdown-item>
+              </div>
             </b-nav-item-dropdown>
           </b-navbar-nav>
 
@@ -180,7 +182,7 @@ export default {
       this.$store.dispatch('refreshMovies');
       setTimeout(() => {
         this.$store.dispatch('setLoadingStatus', false);
-      }, 4500);
+      }, 10000);
     }
   }
 }
@@ -225,4 +227,5 @@ export default {
     font-size: 17px;
     font-family: 'Roboto';
   }
+
 </style>
