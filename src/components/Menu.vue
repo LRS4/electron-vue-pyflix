@@ -54,7 +54,6 @@
                 class="my-2 my-sm-0" 
                 v-b-popover.hover="'Refresh the data source.'"
                 v-b-modal.modal
-                @ok="refreshData()"
                 >
                 <b-icon class="refreshDataIcon" icon="arrow-repeat"></b-icon>
               </b-button>
@@ -82,7 +81,10 @@
               This operation will index the data source and use that to query the OMDB API for movie information and store file locations.
             </p>
             <p>
-              In order for this to work the folder must be in a specific set-up usually as 'Title (Year)'
+              It will add any new movies from the data source, and remove any that no longer exist :)
+            </p>
+            <p>
+              In order for this to work the folders and files must be in a specific structure.
             </p>
             <p>
               As shown in the example on the right, the folder structure is set out with a Movie folder containing various category Folders with movies
@@ -129,16 +131,12 @@
                         <ul>
                           <li>Episode 1</li>
                           <li>Episode 2</li>
-                          <li>Episode 3</li>
-                          <li>Episode 4</li>
                           <li>...</li>
                         </ul>
                       <li>Season 2</li>
                         <ul>
                           <li>Episode 1</li>
                           <li>Episode 2</li>
-                          <li>Episode 3</li>
-                          <li>Episode 4</li>
                           <li>...</li>
                         </ul>
                     </ul>
@@ -146,8 +144,6 @@
                       <ul>
                         <li>Episode 1</li>
                         <li>Episode 2</li>
-                        <li>Episode 3</li>
-                        <li>Episode 4</li>
                         <li>...</li>
                       </ul>
                     </ul>
@@ -179,8 +175,9 @@ export default {
         this.$store.dispatch('setFilter', filter)
     },
     refreshData() {
-      console.log('Data refresh started...');
+      this.$store.dispatch('reindexHDD');
       this.$store.dispatch('setLoadingStatus', true);
+      this.$store.dispatch('refreshMovies');
       setTimeout(() => {
         this.$store.dispatch('setLoadingStatus', false);
       }, 4500);
