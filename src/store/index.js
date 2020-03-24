@@ -8,14 +8,13 @@ const storage = require('electron-storage');
 const path = require('path');
 const fs = require('fs');
 
-
-
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
     state: { // data
         movies : [],
         filter: "",
+        refreshMessages: [],
         loading: true
     },
     actions: { // methods
@@ -117,101 +116,114 @@ export const store = new Vuex.Store({
         updateMovie({ commit }, payload) {
             commit('UPDATE_MOVIE', payload)
         },
-        reindexHDD() {
+        reindexHDD({ commit }) {
             // Reindex and read HDD to create hdd_data.json
-            console.log("Indexing HDD...")
-            getMovieDataFromHDD('F:\\Movies')
-            console.log("Index complete.")
+            console.log('Indexing HDD...');
+            commit('SET_REFRESH_MESSAGES', 'Indexing HDD...');
+            getMovieDataFromHDD('F:\\Movies');
+            console.log('Index complete.');
         },
         refreshMovies({ commit }) {
-            let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../../../utils/hdd_data.json')));
-            console.log(`${movieItemsHDD.length} items retrieved from HDD JSON` );
-            console.log(movieItemsHDD)
-
-            // Read cached data from movies.json
-            let promises = [];
-            storage.get('movies')
-            .then(data => {
-                console.log(`${data.length} items retrieved from cache.`);
-                console.log(data);
-
-                // If a film has been removed from HDD
-                // Check movies cache against hdd_data for any that do not exist
-                // Remove entry from movies object
-                let removeCount = 0;
-                for (let item in data) {
-                    let cacheFileLocation = data[item].fileLocation;
-                    let check = movieItemsHDD.some(item => item.FileLocation == cacheFileLocation);
-                    if (check == false) {
-                        let cacheTitle = data[item].Title;
-                        console.log(`${ cacheTitle } is not in HDD data...`);
-                        console.log(`Removing ${ cacheTitle }...`);
-                        data.splice(item, 1);
-                        console.log(`${ cacheTitle } removed.`);
-                        removeCount++;
-                    }
-                }
-
-                // If a film has been added to HDD
-                // Check hdd_data against movies cache for any that do not exist
-                // Call API and add new entries to movies object
-                for (let item in movieItemsHDD) {
-                    let hddFileLocation = movieItemsHDD[item].FileLocation;
-                    let check = data.some(item => item.fileLocation == hddFileLocation);
-                    if (check == false) { 
-                        // if movie not in cache add it
-                        let newMovie = movieItemsHDD[item]
-                        console.log(`${newMovie.Title} is a new addition! Adding entry...`);
-                        promises.push(
-                            axios.get(`http://www.omdbapi.com/?t=${ newMovie.Title }&y=${ newMovie.Year }&apikey=ff0c3dab`)
-                            .then(response => {
-                            if (response.data.Error == 'Movie not found!') { 
-                                return console.error(`Undefined error! The movie ${newMovie.Title} could not be found.`); 
-                            }
-                            let newData = response.data;
-                            // check item does not already exist
-                            for (let movie in data) {
-                                if (data[movie].Title == newData.Title && data[movie].imdbID == newData.imdbID) {
-                                return console.error(`Duplicate error! The movie '${newData.Title}' is already in the database.`);
-                                }
-                            }
-                            newData.watchCount = 0;
-                            newData.dateLastWatched = 'Not watched';
-                            newData.minuteLastWatched = 0;
-                            newData.myRating = 0;
-                            newData.isFavourite = 0;
-                            newData.fileLocation = newMovie.FileLocation;
-                            newData.dateAdded = moment();
-                            console.log(newData);
-                            data.push(newData);
-                            })
-                        )
-                    }
-                }
+            setTimeout(() => {
+                let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../../../utils/hdd_data.json')));
+                console.log(`${movieItemsHDD.length} items retrieved from HDD JSON` );
+                console.log(movieItemsHDD)
     
-                // Save updated data to cache and view model
-                Promise.all(promises).then(() => {
-                    console.log('Saving response to local storage...')
-                    storage.set('movies', data)
-                    .then(() => {
-                    console.log('The file was successfully written to local storage.'); // C:\Users\L.Spencer\AppData\Roaming\electron-vue\movies.json
-                    if (promises.length == 0 && removeCount == 0) {
-                        console.log("Perfect match. Nothing added or removed!")
-                    } else if (promises.length > 0 || removeCount > 0) {
-                        console.log(`${ promises.length } items were added.`)
-                        console.log(`${ removeCount } items were removed.`)
+                // Read cached data from movies.json
+                let promises = [];
+                storage.get('movies')
+                .then(data => {
+                    console.log(`${data.length} items retrieved from cache.`);
+                    console.log(data);
+    
+                    // If a film has been removed from HDD
+                    // Check movies cache against hdd_data for any that do not exist
+                    // Remove entry from movies object
+                    let removeCount = 0;
+                    for (let item in data) {
+                        let cacheFileLocation = data[item].fileLocation;
+                        let check = movieItemsHDD.some(item => item.FileLocation == cacheFileLocation);
+                        if (check == false) {
+                            let cacheTitle = data[item].Title;
+                            console.log(`${ cacheTitle } is not in HDD data...`);
+                            console.log(`Removing ${ cacheTitle }...`);
+                            data.splice(item, 1);
+                            commit('SET_REFRESH_MESSAGES', `${ cacheTitle } removed.`);
+                            removeCount++;
+                        }
                     }
-                    })
-                    .catch(err => {
-                    console.error(err);
+    
+                    // If a film has been added to HDD
+                    // Check hdd_data against movies cache for any that do not exist
+                    // Call API and add new entries to movies object
+                    for (let item in movieItemsHDD) {
+                        let hddFileLocation = movieItemsHDD[item].FileLocation;
+                        let check = data.some(item => item.fileLocation == hddFileLocation);
+                        if (check == false) { 
+                            // if movie not in cache add it
+                            let newMovie = movieItemsHDD[item]
+                            console.log(`${ newMovie.Title } is a new addition! Adding entry...`);
+                            promises.push(
+                                axios.get(`http://www.omdbapi.com/?t=${ newMovie.Title }&y=${ newMovie.Year }&apikey=ff0c3dab`)
+                                .then(response => {
+                                if (response.data.Error == 'Movie not found!') { 
+                                    commit('SET_REFRESH_MESSAGES', `The movie ${ newMovie.Title } could not be found...`)
+                                    return console.error(`Undefined error! The movie ${ newMovie.Title } could not be found.`); 
+                                }
+                                let newData = response.data;
+                                // check item does not already exist
+                                for (let movie in data) {
+                                    if (data[movie].Title == newData.Title && data[movie].imdbID == newData.imdbID) {
+                                    return console.error(`Duplicate error! The movie '${ newData.Title }' is already in the database.`);
+                                    }
+                                }
+                                newData.watchCount = 0;
+                                newData.dateLastWatched = 'Not watched';
+                                newData.minuteLastWatched = 0;
+                                newData.myRating = 0;
+                                newData.isFavourite = 0;
+                                newData.fileLocation = newMovie.FileLocation;
+                                newData.dateAdded = moment();
+                                commit('SET_REFRESH_MESSAGES', `${ newMovie.Title } added.`)
+    
+                                console.log(newData);
+                                data.push(newData);
+                                })
+                            )
+                        }
+                    }
+        
+                    // Save updated data to cache and view model
+                    Promise.all(promises).then(() => {
+                        console.log('Saving response to local storage...')
+                        storage.set('movies', data)
+                        .then(() => {
+                        console.log('The file was successfully written to local storage.'); // C:\Users\L.Spencer\AppData\Roaming\electron-vue\movies.json
+                        if (promises.length == 0 && removeCount == 0) {
+                            console.log("Nothing to add or remove :)")
+                            commit('SET_REFRESH_MESSAGES', 'Nothing to add or remove :)');
+                        } else if (promises.length > 0 || removeCount > 0) {
+                            console.log(`${ promises.length } items were added.`)
+                            console.log(`${ removeCount } items were removed.`)
+                            commit('SET_REFRESH_MESSAGES', `${ promises.length } items were added.`);
+                            commit('SET_REFRESH_MESSAGES', `${ removeCount } items were removed.`);
+                        }
+                        })
+                        .catch(err => {
+                        console.error(err);
+                        });
+                        commit('SET_MOVIES', data.sort((a, b) => a.Title.localeCompare(b.Title)));
                     });
-                    commit('SET_MOVIES', data.sort((a, b) => a.Title.localeCompare(b.Title)));
+    
+                    setTimeout(() => {
+                        commit('SET_REFRESH_MESSAGES', null);
+                    }, 10000);
+                    
+                })
+                .catch(err => {
+                    console.error(err);
                 });
-                
-            })
-            .catch(err => {
-                console.error(err);
-            });
+            }, 4000);
         }
     },
     mutations: { // setters
@@ -223,6 +235,13 @@ export const store = new Vuex.Store({
         },
         SET_LOADING(state, status) {
             state.loading = status
+        },
+        SET_REFRESH_MESSAGES(state, message) {
+            if (typeof message == 'string') {
+                state.refreshMessages.push(message);
+            } else {
+                state.refreshMessages = [];
+            }
         },
         UPDATE_MOVIE (state, payload) {
             const { updateType, lastWatched, rating, movieId } = payload;
@@ -237,12 +256,23 @@ export const store = new Vuex.Store({
     },
     getters: { // computed
         getMovies(state) {
+            let filters = ['RecentlyAdded', 'MostWatched', 'TopRated'];
             let genres = ['Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Drama', 'Horror', 'Sci-Fi', 'Thriller', 'War']; 
             let yearRegex = /[0-9][0-9][0-9][0-9]/;
+            if (!filters.includes(state.filters)) {
+                state.movies.sort((a, b) => a.Title.localeCompare(b.Title));
+            }
+
             if (state.filter == undefined || state.filter == "") {
                 return chunk(state.movies, 6);
             } else if (yearRegex.test(state.filter)) {
                 return chunk(state.movies.filter(item => item.Year == state.filter), 6);
+            } else if (state.filter == 'RecentlyAdded') {
+                return chunk(state.movies.filter(item => moment().diff(moment(item.dateAdded), 'days', false) < 7), 6);
+            } else if (state.filter == 'MostWatched') {
+                return chunk(state.movies.sort((a, b) => b.watchCount - a.watchCount), 6);
+            } else if (state.filter == 'TopRated') {
+                return chunk(state.movies.sort((a, b) => b.myRating - a.myRating ), 6);
             } else if (genres.includes(state.filter)) {
                 return chunk(state.movies.filter(item => item.Genre.includes(state.filter)), 6);
             } else {
