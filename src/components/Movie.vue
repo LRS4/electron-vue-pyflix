@@ -21,7 +21,7 @@
           <div class="col-sm-4">
             <p><b-icon icon="tv" style="color: white;"></b-icon> {{ movieData.Genre }}</p>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-2" v-if="movieData.Ratings[1] != undefined">
             <p v-if="movieData.Ratings[1].Value >= 80"><b-img class="rottenTomatoesLogo" :src="require('../assets/certified.jpg')"></b-img> {{ movieData.Ratings[1].Value }}%</p>
             <p v-else-if="movieData.Ratings[1].Value >= 60"><b-img class="rottenTomatoesLogo" :src="require('../assets/fresh.jpg')"></b-img> {{ movieData.Ratings[1].Value }}%</p>
             <p v-else><b-img class="rottenTomatoesLogo" :src="require('../assets/rotten.jpg')"></b-img> {{ movieData.Ratings[1].Value }}%</p>
@@ -252,7 +252,10 @@ export default {
     movieData() {
         let result = this.$store.state.movies.find(item => item.imdbID == this.movieId);
         console.log(result)
-        result.Ratings[1].Value = parseInt(result.Ratings[1].Value);
+        // if rotton tomatoes score exists, convert to int
+        if (result.Ratings[1] != undefined) {
+          result.Ratings[1].Value = parseInt(result.Ratings[1].Value);
+        }
         if (result != undefined) {
             return result;
         } else {
