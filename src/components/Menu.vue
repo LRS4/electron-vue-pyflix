@@ -366,16 +366,18 @@ export default {
       console.error(err);
       });
 
-      // Fire the load movies method and set loading to true
+      // Fire the index HDD method
+      // Then fire the load movies method and set loading to true
       this.$store.dispatch('setLoadingStatus', true);
+      this.$store.dispatch('reindexHDD');
       setTimeout(() => {
         this.$store.dispatch('loadMovies');
-      }, 3000);
+      }, 4000);
 
       // Timeout for turning off loading screen
       setTimeout(() => {
         this.$store.dispatch('setLoadingStatus', false);
-      }, 10000);
+      }, 15000);
       
       // Hide the modal manually
       this.$nextTick(() => {
