@@ -387,7 +387,7 @@ export default {
     firstVisit: {
       // https://vuejs.org/v2/guide/computed.html#Computed-Setter
       get() {
-        return this.$store.state.firstVisit
+        return this.$store.state.firstVisit;
       },
       set(value) {
         this.$store.dispatch('setFirstVisitStatus', value);
