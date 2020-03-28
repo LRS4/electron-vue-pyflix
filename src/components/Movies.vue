@@ -102,7 +102,7 @@ export default {
     stopLoading() {
       setTimeout(() => {
         this.$store.dispatch('setLoadingStatus', false);
-      }, 8000);
+      }, 5000);
     }
   },
   computed: {
@@ -110,7 +110,6 @@ export default {
     ...mapGetters(['getMovies'])
   },
   created() {
-    this.$store.dispatch("loadMovies");
     this.stopLoading();
   }
 }

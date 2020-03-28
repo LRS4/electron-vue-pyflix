@@ -14,6 +14,10 @@ const routes = [
     component: Movies
   },
   {
+    path: '*',
+    redirect: '/'
+  },
+  {
     path: "/movies/:filter",
     name: "movieFilter",
     component: Movies
