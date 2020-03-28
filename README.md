@@ -28,6 +28,7 @@ npm run lint
 * vue create <project-name>
 * vue add electron-builder
 * npm run electron:serve
+* npm run electron:build (for production)
 
 ### Stack
 * VueJS
