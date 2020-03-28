@@ -39,7 +39,7 @@ Just replace “weather.json” with the API URL.
 Fetch has a few shortcomings. Like we demonstrated earlier with fetch, we needed to chain two then functions to the call the get the data. 
 This is simplified with axios. Let’s replace our current fetch function with axios.
 */
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import axios from 'axios';
 import moment from 'moment';
 const storage = require('electron-storage');
@@ -106,12 +106,7 @@ export default {
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.loading
-    }, 
-    refreshMessages() {
-      return this.$store.state.refreshMessages
-    },
+    ...mapState(['loading', 'refreshMessages']),
     ...mapGetters(['getMovies'])
   },
   created() {
