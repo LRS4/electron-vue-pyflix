@@ -7,6 +7,8 @@ const chunk = require('chunk');
 const storage = require('electron-storage');
 const path = require('path');
 const fs = require('fs');
+const remote = require('electron').remote;
+const app = remote.app;
 
 Vue.use(Vuex)
 
@@ -52,12 +54,13 @@ export const store = new Vuex.Store({
                         });
                         } else {
                         // the values for the API lookup from HDD
-                        let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../../../utils/hdd_data.json')));
+                        let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), '/hdd_data.json')));
                     
                         // https://stackoverflow.com/questions/56532652/axios-get-then-in-a-for-loop
                         let movies = [];
                         let promises = [];
                         console.log('Calling OMDB API...');
+                        commit('SET_REFRESH_MESSAGES', `Calling OMDB API...`)
                 
                         movieItemsHDD.forEach(item => {
                             if (item.Type == 'movie') {
@@ -112,10 +115,13 @@ export const store = new Vuex.Store({
                         
                         Promise.all(promises).then(() => {
                             console.log('Saving response to local storage...')
+                            commit('SET_REFRESH_MESSAGES', `Saving response data...`)
                             storage.set('movies', movies)
                             .then(() => {
                             console.log('The file was successfully written to local storage.'); // C:\Users\L.Spencer\AppData\Roaming\pyflix\movies.json
                             console.log(`${promises.length} items were saved successfully.`) // replace \pyflix\ with application name if different
+                            commit('SET_REFRESH_MESSAGES', `File saved...`)
+                            commit('SET_REFRESH_MESSAGES', `${promises.length} items indexed!`)
                             })
                             .catch(err => {
                             console.error(err);
@@ -130,7 +136,7 @@ export const store = new Vuex.Store({
 
                 setTimeout(() => {
                     commit('SET_REFRESH_MESSAGES', null);
-                }, 5000);
+                }, 15000);
             })
         },   
         setFilter({ commit }, value) {
@@ -151,13 +157,13 @@ export const store = new Vuex.Store({
             console.log('Indexing HDD...');
             commit('SET_REFRESH_MESSAGES', 'Indexing HDD...');
             
-            // Pass in the folder path from state
-            getMovieDataFromHDD(state.folder_path);
+            // Pass in the folder path from state and output path
+            getMovieDataFromHDD(state.folder_path, app.getPath('userData'));
             console.log('Index complete.');
         },
         refreshMovies({ commit }) {
             setTimeout(() => {
-                let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../../../utils/hdd_data.json')));
+                let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'hdd_data.json')));
                 console.log(`${movieItemsHDD.length} items retrieved from HDD JSON` );
                 console.log(movieItemsHDD)
     

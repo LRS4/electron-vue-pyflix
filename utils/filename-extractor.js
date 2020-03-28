@@ -48,7 +48,7 @@ function filewalker(dir, done) {
  * @see https://stackoverflow.com/questions/55901040/how-do-i-throw-error-in-one-function-to-be-caught-by-another-function
  * @param {String} folder_path 
  */
-export default function getMovieDataFromHDD(folder_path) {
+export default function getMovieDataFromHDD(folder_path, output_path) {
     let target_path = path.normalize(folder_path);
     if (path.isAbsolute(target_path) && fs.existsSync(target_path)) {
         filewalker(target_path, function (err, data) {
@@ -59,7 +59,7 @@ export default function getMovieDataFromHDD(folder_path) {
             var t0 = performance.now();
 
             console.log("Starting HDD indexing operation...");
-            const outputFilePath = path.join(__dirname, '../../../../../../utils/hdd_data.json');
+            const outputFilePath = path.join(output_path, '/hdd_data.json');
             // Clear file by overwriting
             fs.writeFile(outputFilePath, "", function (err) {
                 if (err) {
