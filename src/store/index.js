@@ -13,97 +13,124 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: { // data
         movies : [],
+        folder_path: "",
         filter: "",
         refreshMessages: [],
-        loading: true
+        loading: true, 
+        firstVisit: false
     },
     actions: { // methods
-        loadMovies({ commit }) {
-            console.log('Attempting to retrieve movies.json from local storage...');
-            storage.isPathExists('movies.json', (itDoes) => {
-                if (itDoes) {
-                storage.get('movies')
-                .then(data => {
-                    console.log(`${data.length} items retrieved successfully.`);
-                    let movies = data.sort((a, b) => a.Title.localeCompare(b.Title)); // sort alphabetical
-                    commit('SET_MOVIES', movies);
-                })
-                .catch(err => {
-                    console.error(err);
-                });
-                } else {
-                // the values for the API lookup from HDD
-                let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../../../utils/hdd_data.json')));
-            
-                // https://stackoverflow.com/questions/56532652/axios-get-then-in-a-for-loop
-                let movies = [];
-                let promises = [];
-                console.log('Calling OMDB API...');
-        
-                movieItemsHDD.forEach(item => {
-                    if (item.Type == 'movie') {
-                    promises.push(
-                        axios.get(`http://www.omdbapi.com/?t=${ item.Title }&y=${ item.Year }&apikey=ff0c3dab`)
-                        .then(response => {
-                        if (response.data.Error == 'Movie not found!') { 
-                            return console.error(`Undefined error! The movie ${item.Title} could not be found.`); 
-                        }
-                        
-                        let newData = response.data;
-                        newData.watchCount = 0;
-                        newData.dateLastWatched = 'Not watched';
-                        newData.minuteLastWatched = 0;
-                        newData.myRating = 0;
-                        newData.isFavourite = 0;
-                        newData.fileLocation = item.FileLocation;
-                        newData.dateAdded = moment();
-                        console.log(newData);
-                        movies.push(newData);
+        loadMovies({ commit, dispatch }) {
+            // if user information exists in cache
+            storage.isPathExists('user.json', (itDoes) => {
+                if (itDoes) { 
+                    console.log('Reading user information...');
+                    storage.get('user')
+                        .then(data => {
+                            dispatch('setFirstVisitStatus', {
+                                status: data.isFirstTime,
+                                folder_path: data.folderPath
+                            });
+                            console.log(`User information retrieved successfully.`);
                         })
-                    )
-                    } else {
-                        promises.push(
-                            axios.get(`http://www.omdbapi.com/?t=${ item.Title }&apikey=ff0c3dab`)
-                            .then(response => {
-                            let newData = response.data; 
-                            
-                            // add seasons arrays to series object
-                            // these contain episode file locations
-                            let seasons = [];
-                            if (item.Type == 'series') { 
-                                for (let key in item) {
-                                    if (key.includes('Season')) {
-                                        seasons.push(item[key]);
-                                    }
-                                }
-                            }
-
-                            newData.seasons = seasons;
-                            newData.watchCount = 0;
-                            newData.dateLastWatched = 'Not watched';
-                            newData.minuteLastWatched = 0;
-                            newData.myRating = 0;
-                            newData.isFavourite = 0;
-                            newData.dateAdded = moment();
-                            movies.push(newData);
-                            })
-                        )
-                    }
-                })
-                
-                Promise.all(promises).then(() => {
-                    console.log('Saving response to local storage...')
-                    storage.set('movies', movies)
-                    .then(() => {
-                    console.log('The file was successfully written to local storage.'); // C:\Users\L.Spencer\AppData\Roaming\pyflix\movies.json
-                    console.log(`${promises.length} items were saved successfully.`) // replace \pyflix\ with application name if different
-                    })
-                    .catch(err => {
-                    console.error(err);
+                        .catch(err => {
+                            console.error(err);
                     });
-                    commit('SET_MOVIES', movies.sort((a, b) => a.Title.localeCompare(b.Title)));
-                });
+                    // if movies exist in cache
+                    storage.isPathExists('movies.json', (itDoes) => {
+                        if (itDoes) {
+                        storage.get('movies')
+                        .then(data => {
+                            console.log(`${data.length} items retrieved successfully.`);
+                            commit('SET_REFRESH_MESSAGES', `${data.length} items loaded!`);
+                            commit('SET_REFRESH_MESSAGES', `Enjoy!`);
+                            let movies = data.sort((a, b) => a.Title.localeCompare(b.Title)); // sort alphabetical
+                            commit('SET_MOVIES', movies);
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                        } else {
+                        // the values for the API lookup from HDD
+                        let movieItemsHDD = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../../../utils/hdd_data.json')));
+                    
+                        // https://stackoverflow.com/questions/56532652/axios-get-then-in-a-for-loop
+                        let movies = [];
+                        let promises = [];
+                        console.log('Calling OMDB API...');
+                
+                        movieItemsHDD.forEach(item => {
+                            if (item.Type == 'movie') {
+                            promises.push(
+                                axios.get(`http://www.omdbapi.com/?t=${ item.Title }&y=${ item.Year }&apikey=ff0c3dab`)
+                                .then(response => {
+                                if (response.data.Error == 'Movie not found!') { 
+                                    return console.error(`Undefined error! The movie ${item.Title} could not be found.`); 
+                                }
+                                
+                                let newData = response.data;
+                                newData.watchCount = 0;
+                                newData.dateLastWatched = 'Not watched';
+                                newData.minuteLastWatched = 0;
+                                newData.myRating = 0;
+                                newData.isFavourite = 0;
+                                newData.fileLocation = item.FileLocation;
+                                newData.dateAdded = moment();
+                                console.log(newData);
+                                movies.push(newData);
+                                })
+                            )
+                            } else {
+                                promises.push(
+                                    axios.get(`http://www.omdbapi.com/?t=${ item.Title }&apikey=ff0c3dab`)
+                                    .then(response => {
+                                    let newData = response.data; 
+                                    
+                                    // add seasons arrays to series object
+                                    // these contain episode file locations
+                                    let seasons = [];
+                                    if (item.Type == 'series') { 
+                                        for (let key in item) {
+                                            if (key.includes('Season')) {
+                                                seasons.push(item[key]);
+                                            }
+                                        }
+                                    }
+
+                                    newData.seasons = seasons;
+                                    newData.watchCount = 0;
+                                    newData.dateLastWatched = 'Not watched';
+                                    newData.minuteLastWatched = 0;
+                                    newData.myRating = 0;
+                                    newData.isFavourite = 0;
+                                    newData.dateAdded = moment();
+                                    movies.push(newData);
+                                    })
+                                )
+                            }
+                        })
+                        
+                        Promise.all(promises).then(() => {
+                            console.log('Saving response to local storage...')
+                            storage.set('movies', movies)
+                            .then(() => {
+                            console.log('The file was successfully written to local storage.'); // C:\Users\L.Spencer\AppData\Roaming\pyflix\movies.json
+                            console.log(`${promises.length} items were saved successfully.`) // replace \pyflix\ with application name if different
+                            })
+                            .catch(err => {
+                            console.error(err);
+                            });
+                            commit('SET_MOVIES', movies.sort((a, b) => a.Title.localeCompare(b.Title)));
+                        });
+                        }
+                    })
+                } else {
+                    this.dispatch('setFirstVisitStatus', { status: true });
                 }
+
+                setTimeout(() => {
+                    commit('SET_REFRESH_MESSAGES', null);
+                }, 5000);
             })
         },   
         setFilter({ commit }, value) {
@@ -113,14 +140,19 @@ export const store = new Vuex.Store({
         setLoadingStatus({commit}, status) {
             commit('SET_LOADING', status);
         },
+        setFirstVisitStatus({commit}, payload) {
+            commit('SET_FIRST_VISIT', payload);
+        },
         updateMovie({ commit }, payload) {
             commit('UPDATE_MOVIE', payload)
         },
-        reindexHDD({ commit }) {
+        reindexHDD({ commit, state }) {
             // Reindex and read HDD to create hdd_data.json
             console.log('Indexing HDD...');
             commit('SET_REFRESH_MESSAGES', 'Indexing HDD...');
-            getMovieDataFromHDD('F:\\Movies');
+            
+            // Pass in the folder path from state
+            getMovieDataFromHDD(state.folder_path);
             console.log('Index complete.');
         },
         refreshMovies({ commit }) {
@@ -236,6 +268,11 @@ export const store = new Vuex.Store({
         SET_LOADING(state, status) {
             state.loading = status
         },
+        SET_FIRST_VISIT(state, payload) {
+            const { status, folder_path } = payload;
+            state.firstVisit = status;
+            state.folder_path = folder_path;
+        },
         SET_REFRESH_MESSAGES(state, message) {
             if (typeof message == 'string') {
                 state.refreshMessages.push(message);
@@ -279,6 +316,6 @@ export const store = new Vuex.Store({
                 let filter = (state.filter).toLowerCase();
                 return chunk(state.movies.filter(item => (item.Title).toLowerCase().includes(filter) || (item.Actors).toLowerCase().includes(filter)), 6);
             }
-        }
+        }   
     }
 })
