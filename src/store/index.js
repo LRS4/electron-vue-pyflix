@@ -114,14 +114,15 @@ export const store = new Vuex.Store({
                         })
                         
                         Promise.all(promises).then(() => {
-                            console.log('Saving response to local storage...')
-                            commit('SET_REFRESH_MESSAGES', `Saving response data...`)
+                            console.log('Saving response to local storage...');
+                            commit('SET_REFRESH_MESSAGES', `Saving response data...`);
                             storage.set('movies', movies)
                             .then(() => {
                             console.log('The file was successfully written to local storage.'); // C:\Users\L.Spencer\AppData\Roaming\pyflix\movies.json
                             console.log(`${promises.length} items were saved successfully.`) // replace \pyflix\ with application name if different
-                            commit('SET_REFRESH_MESSAGES', `File saved...`)
-                            commit('SET_REFRESH_MESSAGES', `${promises.length} items indexed!`)
+                            commit('SET_REFRESH_MESSAGES', `File saved...`);
+                            commit('SET_REFRESH_MESSAGES', `${promises.length} items indexed!`);
+                            commit('SET_REFRESH_MESSAGES', 'Enjoy!');
                             })
                             .catch(err => {
                             console.error(err);
