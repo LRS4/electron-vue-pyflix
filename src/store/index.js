@@ -18,7 +18,7 @@ export const store = new Vuex.Store({
         folder_path: "",
         filter: "",
         refreshMessages: [],
-        loading: true, 
+        loading: false,
         firstVisit: false
     },
     actions: { // methods

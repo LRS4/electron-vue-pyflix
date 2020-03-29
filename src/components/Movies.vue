@@ -3,7 +3,7 @@
     <transition name="loading-fade">
       <div class="container h-100" v-show="loading">
         <div class="row h-100 justify-content-center align-items-center">
-          <h1 class="loadingBanner">Pyflix</h1> 
+          <h1 class="loadingBanner">PYFLIX</h1> 
         </div>  
         <b-spinner variant="success" type="grow" label="Spinning"></b-spinner>
         <p v-for="(message, index) in refreshMessages" v-bind:key="index">{{ message }}</p>
@@ -177,7 +177,7 @@ a {
 
 /* The initial loading screen fading out */
 .loadingBanner {
-  font-family: 'Bebas Neue';
+  font-family: 'Bebas Neue', Helvetica;
   font-size: 160px;
   margin-top: 25%;
 }

@@ -19,7 +19,11 @@ export default {
     Menu
   },
   mounted() {
-    this.$store.dispatch('loadMovies');
+    // set timeout to wait for fonts to load
+    setTimeout(() => {
+      this.$store.dispatch('loadMovies');
+    }, 5000);
+    this.$store.dispatch('setLoadingStatus', true);
   },
   computed: {
     ...mapState([
