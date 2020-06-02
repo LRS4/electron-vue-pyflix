@@ -4,6 +4,10 @@
 
 Project to create a Netflix-like application for personal use. This would include an indexed registry of films and connect to open APIs to query film information. This was the first project using ElectronJS alongside VueJS to adapt web application development knowledge to building desktop applications. The intended use is to run this from a Raspberry Pi 3 using Raspbian. Later iterations will include recommendation algorithms and usage statistics. 
 
+## Preview
+
+![Home Page](https://res.cloudinary.com/dayqxxsip/image/upload/v1587819197/App%20Screenshots/pyflix-app_hhvzxi.png)
+
 ## Project setup
 ```
 npm install
